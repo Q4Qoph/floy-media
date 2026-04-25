@@ -1,5 +1,5 @@
 {
-  "name": "app-x-backend",
+  "name": "floymedia-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,15 +16,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mwong3la/app-x-backend.git"
+    "url": "git+https://github.com/BUCOLT/floymedia.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mwong3la/app-x-backend/issues"
+    "url": "https://github.com/BUCOLT/floymedia.git/issues"
   },
-  "homepage": "https://github.com/mwong3la/app-x-backend#readme",
+  "homepage": "https://github.com/BUCOLT/floymedia.git#readme",
   "dependencies": {
     "@azure/storage-blob": "^12.27.0",
     "@prisma/client": "^6.6.0",

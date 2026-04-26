@@ -3,7 +3,12 @@ import * as galleryController from '../../controllers/galleryController';
 import { authenticateAdmin } from '../../middlewares/auth';
 import { upload } from '../../middlewares/upload';
 import { validateBody } from '../../middlewares/validate';
-import { galleryCategorySchema, galleryItemSchema } from '../../validators/schemas';
+import {
+  galleryCategorySchema,
+  galleryCategoryUpdateSchema,
+  galleryItemSchema,
+  galleryItemUpdateSchema
+} from '../../validators/schemas';
 
 const router = Router();
 
@@ -25,13 +30,13 @@ router.put(
         { name: 'file', maxCount: 1 },
         { name: 'thumbnail', maxCount: 1 }
     ]),
-    validateBody(galleryItemSchema),
+    validateBody(galleryItemUpdateSchema),
     galleryController.updateGalleryItem
 );
 router.delete('/:id', authenticateAdmin, galleryController.deleteGalleryItem);
 
 router.post('/categories', authenticateAdmin, validateBody(galleryCategorySchema), galleryController.createGalleryCategory);
-router.put('/categories/:id', authenticateAdmin, validateBody(galleryCategorySchema), galleryController.updateGalleryCategory);
+router.put('/categories/:id', authenticateAdmin, validateBody(galleryCategoryUpdateSchema), galleryController.updateGalleryCategory);
 router.delete('/categories/:id', authenticateAdmin, galleryController.deleteGalleryCategory);
 
 export default router;

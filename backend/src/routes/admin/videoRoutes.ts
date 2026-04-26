@@ -3,7 +3,7 @@ import * as videoController from '../../controllers/videoController';
 import { authenticateAdmin } from '../../middlewares/auth';
 import { upload } from '../../middlewares/upload';
 import { validateBody } from '../../middlewares/validate';
-import { videoSchema } from '../../validators/schemas';
+import { videoSchema, videoUpdateSchema } from '../../validators/schemas';
 
 const router = Router();
 
@@ -24,7 +24,7 @@ router.put(
     { name: 'video', maxCount: 1 },
     { name: 'thumbnail', maxCount: 1 }
   ]),
-  validateBody(videoSchema),
+  validateBody(videoUpdateSchema),
   videoController.updateVideo
 );
 router.delete('/:id', authenticateAdmin, videoController.deleteVideo);

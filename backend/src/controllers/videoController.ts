@@ -44,8 +44,9 @@ export const createVideo = async (req: Request, res: Response) => {
 };
 
 export const listVideos = async (req: Request, res: Response) => {
+  const isAdmin = req.baseUrl.startsWith('/admin') || req.originalUrl.startsWith('/admin');
   const where = {
-    ...(req.path.startsWith('/admin') ? {} : { isPublic: true }),
+    ...(isAdmin ? {} : { isPublic: true }),
     ...(req.query.categoryId ? { categoryId: String(req.query.categoryId) } : {})
   };
   res.json(await listByModel(req, 'videoHighlight', where));

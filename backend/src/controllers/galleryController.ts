@@ -49,8 +49,9 @@ export const createGalleryItem = async (req: Request, res: Response) => {
 };
 
 export const listGallery = async (req: Request, res: Response) => {
+  const isAdmin = req.baseUrl.startsWith('/admin') || req.originalUrl.startsWith('/admin');
   const where: Prisma.GalleryItemWhereInput = {
-    ...(req.path.startsWith('/admin') ? {} : { isPublic: true }),
+    ...(isAdmin ? {} : { isPublic: true }),
     ...(req.query.mediaType ? { mediaType: String(req.query.mediaType) as any } : {}),
     ...(req.query.featured ? { isFeatured: String(req.query.featured) === 'true' } : {}),
     ...(req.query.categoryId ? { categoryId: String(req.query.categoryId) } : {})

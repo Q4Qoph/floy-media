@@ -31,7 +31,15 @@ export const createService = async (req: Request, res: Response) => {
 };
 
 export const listServices = async (req: Request, res: Response) => {
-  const where = req.path.startsWith('/admin') ? {} : { isActive: true };
+  const isActiveParam = req.query.isActive !== undefined ? String(req.query.isActive) : undefined;
+  const isActive =
+    isActiveParam === undefined ? undefined : isActiveParam.toLowerCase() === 'true';
+
+  const isAdmin = req.baseUrl.startsWith('/admin') || req.originalUrl.startsWith('/admin');
+  const where = isAdmin
+    ? (isActive === undefined ? {} : { isActive })
+    : ({ isActive: isActive === undefined ? true : isActive } as const);
+
   res.json(await listByModel(req, 'service', where));
 };
 

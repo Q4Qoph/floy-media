@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ArrowRight, CheckCircle } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 export default function JoinTeamPage() {
   const [formData, setFormData] = useState({
@@ -33,15 +34,12 @@ export default function JoinTeamPage() {
 
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-32 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">Join Our Team</h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Are you a creative professional? We're always looking for talented photographers, videographers, and editors
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="Join Our Team"
+        description="Join the FloyMedia creative team. We are building a network of photographers, videographers, editors, designers, drone operators, and storytellers."
+        eyebrow="Careers"
+        variant="indigo"
+      />
 
       {/* Application Form */}
       <section className="py-20 md:py-32 bg-white">
@@ -143,7 +141,7 @@ export default function JoinTeamPage() {
 
             {/* Message */}
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">Why Should We Hire You?</label>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">Why Do You Want To Join FloyMedia?</label>
               <textarea
                 name="message"
                 value={formData.message}
@@ -170,7 +168,7 @@ export default function JoinTeamPage() {
               <CheckCircle className="text-green-600 flex-shrink-0" size={24} />
               <div>
                 <p className="font-semibold text-green-900">Application submitted!</p>
-                <p className="text-green-700 text-sm">We'll review your application and contact you soon.</p>
+                <p className="text-green-700 text-sm">If you are passionate about media, storytelling, or creative work, we welcome you to apply.</p>
               </div>
             </div>
           )}

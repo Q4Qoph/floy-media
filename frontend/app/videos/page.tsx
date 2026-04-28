@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Play, ArrowRight } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 const videos = [
   {
@@ -58,15 +59,12 @@ const videos = [
 export default function VideosPage() {
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-32 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">Video Highlights</h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Watch our latest cinematic productions and professional video work
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="Video Highlights"
+        description="Watch FloyMedia video productions including wedding films, corporate videos, sports highlights, event coverage, brand stories, documentaries, and social media reels."
+        eyebrow="Watch & Explore"
+        variant="orange"
+      />
 
       {/* Videos Grid */}
       <section className="py-20 md:py-32 bg-white">
@@ -113,9 +111,9 @@ export default function VideosPage() {
       {/* CTA Section */}
       <section className="py-20 md:py-32 bg-gradient-to-r from-blue-600 to-cyan-500">
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Need Professional Video Production?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Need Video Coverage?</h2>
           <p className="text-xl text-white/90 mb-8">
-            Let us create stunning video content for your brand or event
+            FloyMedia delivers high-quality video storytelling for people, brands, businesses, and communities.
           </p>
           <Link href="/bookings" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 font-semibold rounded-lg transition-colors">
             Request a Quote

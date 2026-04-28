@@ -3,86 +3,84 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle, Camera, Film, Scissors, Drone } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 const services = [
   {
     id: 1,
-    title: 'Professional Photography',
+    title: 'Photography',
     icon: Camera,
     image: '/images/service-photography.jpg',
-    description: 'Capturing your moments with artistic excellence and technical precision.',
+    description: 'Wedding, family, portraits, events, corporate, sports, products, lifestyle.',
     features: [
-      'Studio & On-Location Photography',
-      'Weddings & Events',
-      'Corporate Headshots',
-      'Product Photography',
-      'Real Estate Photography',
-      'Professional Editing & Retouching',
+      'Wedding shoots',
+      'Family portraits',
+      'Corporate photography',
+      'Sports photography',
+      'Product and lifestyle shoots',
+      'Edited high-quality delivery',
     ],
-    pricing: 'Starting from $500',
+    pricing: 'Tailor-made pricing',
   },
   {
     id: 2,
-    title: 'Cinematic Videography',
+    title: 'Videography',
     icon: Film,
     image: '/images/service-videography.jpg',
-    description: 'Bringing your story to life with cinematic quality and creative storytelling.',
+    description: 'Wedding films, events, corporate videos, brand stories, documentaries, reels.',
     features: [
-      'Event Videography',
-      'Corporate Videos',
-      'Promotional Content',
-      '4K & High-Speed Filming',
-      'Multi-Camera Production',
-      'Professional Color Grading',
+      'Wedding and event films',
+      'Corporate videos',
+      'Brand stories and reels',
+      'Documentary style production',
+      'Highlights and social clips',
+      'Professional post production',
     ],
-    pricing: 'Starting from $1,200',
+    pricing: 'Tailor-made pricing',
   },
   {
     id: 3,
-    title: 'Video Editing & Post-Production',
+    title: 'Wedding & Events',
     icon: Scissors,
     image: '/images/service-editing.jpg',
-    description: 'Transforming raw footage into polished, professional content.',
+    description: 'Full coverage, highlights, albums, private galleries, social media clips.',
     features: [
-      'Video Editing & Assembly',
-      'Color Correction & Grading',
-      'Motion Graphics & Animation',
-      'Sound Design & Mixing',
-      'Visual Effects',
-      'Caption & Subtitle Design',
+      'Full event-day coverage',
+      'Highlight reels',
+      'Private galleries',
+      'Albums and photo packages',
+      'Social media clips',
+      'Fast turnaround options',
     ],
-    pricing: 'Starting from $400',
+    pricing: 'Tailor-made pricing',
   },
   {
     id: 4,
-    title: 'Drone Services',
+    title: 'Corporate Shoots',
     icon: Drone,
     image: '/images/service-drone.jpg',
-    description: 'Stunning aerial photography and videography from unique perspectives.',
+    description: 'Headshots, team photos, office shoots, company profiles, testimonials.',
     features: [
-      'Aerial Photography',
-      'Drone Videography',
-      'Real Estate Aerial Shots',
-      'Event Coverage',
-      'High-Resolution Footage',
-      'Licensed & Insured Operations',
+      'Executive and staff headshots',
+      'Team and office photography',
+      'Company profile videos',
+      'Client testimonials',
+      'Event and conference coverage',
+      'Brand-ready media kits',
     ],
-    pricing: 'Starting from $800',
+    pricing: 'Tailor-made pricing',
   },
 ];
 
 export default function ServicesPage() {
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-32 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">Our Services</h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Comprehensive creative solutions tailored to your unique needs and vision
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="Our Services"
+        description="FloyMedia offers complete creative media solutions including photography, videography, and storytelling for individuals, businesses, and organizations."
+        eyebrow="What We Offer"
+        variant="blue"
+      />
 
       {/* Services Detail Section */}
       <section className="py-20 md:py-32 bg-white">
@@ -150,30 +148,30 @@ export default function ServicesPage() {
       <section className="py-20 md:py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Flexible Packages</h2>
-            <p className="text-lg text-gray-600">Choose the perfect package for your needs</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Pricing</h2>
+            <p className="text-lg text-gray-600">Every project is customized to your needs.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                name: 'Starter',
-                description: 'Perfect for small projects',
-                price: '$500',
-                features: ['2 Hours Shoot', 'Basic Editing', '50 Final Images', 'Unlimited Revisions'],
+                name: 'What Determines Cost',
+                description: 'Your quote depends on:',
+                price: 'Custom',
+                features: ['Project type', 'Location', 'Duration', 'Production needs'],
               },
               {
-                name: 'Professional',
-                description: 'Most popular choice',
-                price: '$1,500',
-                features: ['Full Day Coverage', 'Advanced Editing', '200+ Final Images', 'Drone Shots', 'Rush Delivery'],
+                name: 'Included in Planning',
+                description: 'We consider:',
+                price: 'Custom',
+                features: ['Editing requirements', 'Delivery format', 'Project timeline', 'Output volume'],
                 highlighted: true,
               },
               {
-                name: 'Premium',
-                description: 'For demanding projects',
-                price: '$3,500',
-                features: ['Multi-Day Coverage', '4K Video', '500+ Images', 'Custom Color Grade', 'Cinematic Edit'],
+                name: 'Best Approach',
+                description: 'Get a tailored package',
+                price: 'Custom',
+                features: ['Request a quote', 'Share project brief', 'Get custom package', 'Confirm booking'],
               },
             ].map((pkg, idx) => (
               <div

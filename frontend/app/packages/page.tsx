@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight, CheckCircle } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 const packages = [
   {
@@ -48,15 +49,12 @@ const packages = [
 export default function PackagesPage() {
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-32 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">Our Packages</h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Flexible pricing options for photography and videography services
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="Our Packages"
+        description="FloyMedia offers tailor-made pricing based on project type, location, duration, production needs, editing requirements, and delivery format."
+        eyebrow="Pricing"
+        variant="slate"
+      />
 
       {/* Packages Grid */}
       <section className="py-20 md:py-32 bg-white">
@@ -107,9 +105,9 @@ export default function PackagesPage() {
       {/* Custom Quote Section */}
       <section className="py-20 md:py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Custom Packages Available</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Every Project Is Customized</h2>
           <p className="text-xl text-gray-600 mb-8">
-            Need something tailored to your specific requirements? We can create custom packages for your unique needs.
+            Every project is customized to client needs.
           </p>
           <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
             Request Custom Quote

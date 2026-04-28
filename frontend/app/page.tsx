@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowRight,
-  Play,
   Award,
   Users,
   Zap,
@@ -47,28 +46,29 @@ export default function HomePage() {
             {/* Left: copy + mosaic (floy: plain white column, padding only) */}
             <div className="w-full lg:w-1/2 flex flex-col justify-between lg:pr-10 xl:pr-12">
               <div className="text-center lg:text-left">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-[1.08] tracking-tight mb-5">
-                  Premium Creative{' '}
-                  <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Production</span>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.08] tracking-tight mb-5">
+                  We Shoot Your World.
+                  <span className="block text-[#045be2]">
+                    We Tell Your Story.
+                  </span>
                 </h1>
-                <p className="text-base md:text-lg text-gray-600 max-w-lg mx-auto lg:mx-0 leading-relaxed mb-8">
-                  Professional photography, videography, and AI-powered content creation for brands and creators that demand
-                  excellence
+                <p className="text-sm md:text-base text-gray-600 max-w-lg mx-auto lg:mx-0 leading-relaxed mb-8">
+                  FloyMedia is a creative media production company providing professional photography, videography,
+                  event coverage, corporate shoots, sports media, family photography, product content, and visual
+                  storytelling for individuals, brands, businesses, and communities.
                 </p>
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center lg:justify-start">
                   <Link
                     href="/bookings"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-sm font-semibold rounded-lg transition-colors"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#045be2] hover:bg-[#034dc2] text-white text-sm font-semibold rounded-lg transition-colors"
                   >
-                    Book Now
-                    <ArrowRight size={18} />
+                    Book a Shoot
                   </Link>
                   <Link
-                    href="/gallery"
+                    href="/contact"
                     className="inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-gray-200 bg-white text-gray-900 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    <Play size={18} />
-                    View Gallery
+                    Request a Quote
                   </Link>
                 </div>
               </div>
@@ -167,13 +167,26 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Services Grid Section — unchanged copy */}
+      <section className="py-16 md:py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 md:px-8">
+          <div className="text-center">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Short Intro</h2>
+            <p className="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              FloyMedia captures stories through powerful visuals. From weddings and family moments to corporate shoots,
+              sports coverage, product photography, community projects, and brand campaigns, we help clients preserve
+              memories, promote their work, and communicate with impact.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="py-20 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Our Services</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Complete creative solutions tailored to bring your vision to life
+              FloyMedia offers complete creative media solutions including photography, videography, and storytelling
+              for individuals, businesses, and organizations.
             </p>
           </div>
 
@@ -252,7 +265,7 @@ export default function HomePage() {
               href="/services"
               className="inline-flex items-center gap-2 px-8 py-4 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold rounded-lg transition-colors"
             >
-              Explore All Services
+              Explore Detailed Services
               <ArrowRight size={20} />
             </Link>
           </div>
@@ -269,7 +282,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-2xl border border-blue-100 hover:border-blue-300 hover:shadow-lg transition-all">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center mb-6">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#045be2] to-[#2b7bff] rounded-xl flex items-center justify-center mb-6">
                 <Award className="text-white" size={28} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Award-Winning</h3>
@@ -279,7 +292,7 @@ export default function HomePage() {
             </div>
 
             <div className="bg-white p-8 rounded-2xl border border-blue-100 hover:border-blue-300 hover:shadow-lg transition-all">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center mb-6">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#045be2] to-[#2b7bff] rounded-xl flex items-center justify-center mb-6">
                 <Zap className="text-white" size={28} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">AI-Powered</h3>
@@ -289,7 +302,7 @@ export default function HomePage() {
             </div>
 
             <div className="bg-white p-8 rounded-2xl border border-blue-100 hover:border-blue-300 hover:shadow-lg transition-all">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center mb-6">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#045be2] to-[#2b7bff] rounded-xl flex items-center justify-center mb-6">
                 <Users className="text-white" size={28} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Expert Team</h3>
@@ -309,7 +322,7 @@ export default function HomePage() {
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Featured Works</h2>
               <p className="text-lg text-gray-600">Showcasing our latest projects and creative excellence</p>
             </div>
-            <Link href="/gallery" className="hidden md:inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold">
+            <Link href="/gallery" className="hidden md:inline-flex items-center gap-2 text-[#045be2] hover:text-[#034dc2] font-semibold">
               View All
               <ArrowRight size={20} />
             </Link>
@@ -327,7 +340,7 @@ export default function HomePage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-                <p className="text-gray-900 font-semibold group-hover:text-blue-600 transition-colors">{work.title}</p>
+                <p className="text-gray-900 font-semibold group-hover:text-[#045be2] transition-colors">{work.title}</p>
                 <p className="text-gray-600 text-sm">{work.category}</p>
               </Link>
             ))}
@@ -336,7 +349,7 @@ export default function HomePage() {
           <div className="text-center md:hidden">
             <Link
               href="/gallery"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-[#045be2] hover:bg-[#034dc2] text-white font-semibold rounded-lg transition-colors"
             >
               View Full Gallery
               <ArrowRight size={20} />
@@ -346,26 +359,30 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section — unchanged copy */}
-      <section className="py-20 md:py-32 bg-gradient-to-r from-blue-600 via-blue-700 to-cyan-600">
+      <section className="py-20 md:py-32 bg-gradient-to-r from-[#045be2] via-[#034dc2] to-[#2b7bff]">
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Create Something Amazing?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Book FloyMedia for Your Next Project</h2>
           <p className="text-xl text-white/90 mb-8 leading-relaxed">
-            Let&apos;s bring your creative vision to life with professional production services tailored to your needs
+            Book FloyMedia for your next event, shoot, brand project, corporate function, sports coverage, family
+            session, product campaign, or community documentation project.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/bookings"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 font-semibold rounded-lg transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-[#045be2] hover:bg-gray-100 font-semibold rounded-lg transition-colors"
             >
-              Book Your Session
+              Book Now
               <ArrowRight size={20} />
             </Link>
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-white text-white hover:bg-white/10 font-semibold rounded-lg transition-colors"
             >
-              Get in Touch
+              Request a Quote
             </Link>
+            <a href="tel:+254702781292" className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-white text-white hover:bg-white/10 font-semibold rounded-lg transition-colors">
+              Call: +254 702 781 292
+            </a>
           </div>
         </div>
       </section>

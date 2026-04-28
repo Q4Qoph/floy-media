@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Play, ArrowRight } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { usePublicVideos } from '@/lib/hooks';
 
 const videos = [
   {
@@ -57,6 +58,18 @@ const videos = [
 ];
 
 export default function VideosPage() {
+  const { data: apiVideos = [] } = usePublicVideos();
+  const displayedVideos = apiVideos.length
+    ? apiVideos.map((video) => ({
+        id: video.id,
+        title: video.title,
+        category: video.categoryId || 'General',
+        thumbnail: video.thumbnailUrl || '/images/service-videography.jpg',
+        duration: '--:--',
+        description: video.description || 'FloyMedia video production.',
+      }))
+    : videos;
+
   return (
     <div className="w-full">
       <PageHero
@@ -70,7 +83,7 @@ export default function VideosPage() {
       <section className="py-20 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {videos.map((video) => (
+            {displayedVideos.map((video) => (
               <div key={video.id} className="group">
                 <div className="relative h-72 rounded-2xl overflow-hidden bg-gray-100 mb-6">
                   <Image

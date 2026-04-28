@@ -12,19 +12,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { BookingFormData } from '@/types';
-
 interface BookingFormProps {
   onSuccess?: () => void;
 }
 
 export default function BookingForm({ onSuccess }: BookingFormProps) {
-  const { createBooking } = useCreateBooking();
-  const [isLoading, setIsLoading] = useState(false);
+  const createBooking = useCreateBooking();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const [formData, setFormData] = useState<BookingFormData>({
+  const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
@@ -54,7 +51,6 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setIsLoading(true);
 
     try {
       // Validate required fields
@@ -62,7 +58,14 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
         throw new Error('Please fill in all required fields');
       }
 
-      const response = await createBooking(formData);
+      const response = await createBooking.mutateAsync({
+        fullName: formData.name,
+        phoneNumber: formData.phone,
+        email: formData.email,
+        serviceRequired: formData.serviceType,
+        budgetRange: formData.budget || undefined,
+        message: formData.message || undefined,
+      });
 
       if (response.success) {
         setSuccess(true);
@@ -86,8 +89,6 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to submit booking';
       setError(errorMessage);
       console.error('[v0] Booking error:', err);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -124,7 +125,7 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
             value={formData.name}
             onChange={handleChange}
             required
-            disabled={isLoading}
+            disabled={createBooking.isPending}
           />
         </div>
 
@@ -141,7 +142,7 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
             value={formData.email}
             onChange={handleChange}
             required
-            disabled={isLoading}
+            disabled={createBooking.isPending}
           />
         </div>
 
@@ -158,7 +159,7 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
             value={formData.phone}
             onChange={handleChange}
             required
-            disabled={isLoading}
+            disabled={createBooking.isPending}
           />
         </div>
 
@@ -170,7 +171,7 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
           <Select
             value={formData.serviceType}
             onValueChange={(value) => handleSelectChange('serviceType', value)}
-            disabled={isLoading}
+            disabled={createBooking.isPending}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select a service" />
@@ -193,7 +194,7 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
           <Select
             value={formData.budget}
             onValueChange={(value) => handleSelectChange('budget', value)}
-            disabled={isLoading}
+            disabled={createBooking.isPending}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select budget range" />
@@ -215,7 +216,7 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
           <Select
             value={formData.timeline}
             onValueChange={(value) => handleSelectChange('timeline', value)}
-            disabled={isLoading}
+            disabled={createBooking.isPending}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select timeline" />
@@ -241,7 +242,7 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
           placeholder="Tell us about your project, vision, and any specific requirements..."
           value={formData.message}
           onChange={handleChange}
-          disabled={isLoading}
+          disabled={createBooking.isPending}
           className="min-h-32"
         />
       </div>
@@ -249,11 +250,11 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
       {/* Submit Button */}
       <Button
         type="submit"
-        disabled={isLoading}
+        disabled={createBooking.isPending}
         className="w-full"
         size="lg"
       >
-        {isLoading ? 'Submitting...' : 'Submit Booking Request'}
+        {createBooking.isPending ? 'Submitting...' : 'Submit Booking Request'}
       </Button>
 
       <p className="text-xs text-foreground/60 text-center">

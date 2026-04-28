@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { useCreateBooking } from '@/lib/hooks';
 
 export default function BookingsPage() {
   const [formData, setFormData] = useState({
@@ -16,8 +17,9 @@ export default function BookingsPage() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const bookingMutation = useCreateBooking();
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -25,9 +27,18 @@ export default function BookingsPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    await bookingMutation.mutateAsync({
+      fullName: formData.name,
+      phoneNumber: formData.phone,
+      email: formData.email,
+      serviceRequired: formData.service,
+      projectType: formData.service,
+      projectDate: formData.date ? new Date(formData.date).toISOString() : undefined,
+      budgetRange: formData.budget || undefined,
+      message: formData.message || undefined,
+    });
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 3000);
   };
@@ -54,7 +65,7 @@ export default function BookingsPage() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#045be2] focus:outline-none transition-colors"
                 placeholder="Your name"
               />
             </div>
@@ -68,7 +79,7 @@ export default function BookingsPage() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#045be2] focus:outline-none transition-colors"
                 placeholder="your@email.com"
               />
             </div>
@@ -82,7 +93,7 @@ export default function BookingsPage() {
                 value={formData.phone}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#045be2] focus:outline-none transition-colors"
                 placeholder="+1 (555) 000-0000"
               />
             </div>
@@ -95,7 +106,7 @@ export default function BookingsPage() {
                 value={formData.service}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#045be2] focus:outline-none transition-colors"
               >
                 <option value="">Select a service</option>
                 <option value="photography">Photography</option>
@@ -119,7 +130,7 @@ export default function BookingsPage() {
                 value={formData.date}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#045be2] focus:outline-none transition-colors"
               />
             </div>
 
@@ -130,7 +141,7 @@ export default function BookingsPage() {
                 name="budget"
                 value={formData.budget}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#045be2] focus:outline-none transition-colors"
               >
                 <option value="">Select budget range</option>
                 <option value="tailored">Tailor-made pricing</option>
@@ -145,7 +156,7 @@ export default function BookingsPage() {
                 value={formData.message}
                 onChange={handleChange}
                 rows={5}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#045be2] focus:outline-none transition-colors"
                 placeholder="Tell us more about your project..."
               />
             </div>
@@ -153,12 +164,19 @@ export default function BookingsPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+              className="w-full bg-[#045be2] hover:bg-[#034dc2] text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
+              disabled={bookingMutation.isPending}
             >
-              Submit Booking Request
+              {bookingMutation.isPending ? 'Submitting...' : 'Submit Booking Request'}
               <ArrowRight size={20} />
             </button>
           </form>
+
+          {bookingMutation.isError && (
+            <div className="mt-4 p-4 rounded-lg bg-red-50 text-red-700 text-sm border border-red-200">
+              Failed to submit booking. Please check your details and try again.
+            </div>
+          )}
 
           {/* Success Message */}
           {submitted && (

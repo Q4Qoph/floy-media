@@ -3,9 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const pathname = usePathname();
+
+  if (pathname.startsWith('/admin')) return null;
 
   return (
     <footer className="w-full bg-white border-t border-black/10">

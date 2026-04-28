@@ -1,200 +1,83 @@
 'use client';
 
-import useSWR from 'swr';
-import {
-  galleryApi,
-  teamApi,
-  testimonialApi,
-  serviceApi,
-  bookingApi,
-} from './api';
-import type {
-  Gallery,
-  TeamMember,
-  Testimonial,
-  Service,
-  BookingFormData,
-  BookingResponse,
-} from '@/types';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { adminApi, publicApi, type AdminLoginPayload, type BookingPayload, type ContactPayload, type TeamApplicationPayload } from './api';
 
-// Fetcher function for SWR
-const fetcher = async (url: string) => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('Failed to fetch');
-  }
-  return response.json();
-};
+export const usePublicServices = () =>
+  useQuery({
+    queryKey: ['public-services'],
+    queryFn: publicApi.listServices,
+  });
 
-// Gallery hooks
-export const useGalleries = () => {
-  const { data, error, isLoading } = useSWR<Gallery[]>(
-    '/api/galleries',
-    galleryApi.getAll,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 60000, // 1 minute
-    }
-  );
+export const usePublicGallery = () =>
+  useQuery({
+    queryKey: ['public-gallery'],
+    queryFn: publicApi.listGallery,
+  });
 
-  return {
-    galleries: data || [],
-    isLoading,
-    error,
-  };
-};
+export const usePublicVideos = () =>
+  useQuery({
+    queryKey: ['public-videos'],
+    queryFn: publicApi.listVideos,
+  });
 
-export const useGallery = (id: string) => {
-  const { data, error, isLoading } = useSWR<Gallery>(
-    id ? `/api/galleries/${id}` : null,
-    () => galleryApi.getById(id),
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 60000,
-    }
-  );
+export const usePublicPackages = () =>
+  useQuery({
+    queryKey: ['public-packages'],
+    queryFn: publicApi.listPackages,
+  });
 
-  return {
-    gallery: data,
-    isLoading,
-    error,
-  };
-};
+export const useCreateBooking = () =>
+  useMutation({
+    mutationFn: (payload: BookingPayload) => publicApi.createBooking(payload),
+  });
 
-export const useFeaturedGalleries = () => {
-  const { data, error, isLoading } = useSWR<Gallery[]>(
-    '/api/galleries/featured',
-    galleryApi.getFeatured,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 60000,
-    }
-  );
+export const useCreateContactMessage = () =>
+  useMutation({
+    mutationFn: (payload: ContactPayload) => publicApi.createContactMessage(payload),
+  });
 
-  return {
-    galleries: data || [],
-    isLoading,
-    error,
-  };
-};
+export const useCreateTeamApplication = () =>
+  useMutation({
+    mutationFn: (payload: TeamApplicationPayload) => publicApi.createTeamApplication(payload),
+  });
 
-// Team hooks
-export const useTeamMembers = () => {
-  const { data, error, isLoading } = useSWR<TeamMember[]>(
-    '/api/team',
-    teamApi.getAll,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 60000,
-    }
-  );
+export const useAdminLogin = () =>
+  useMutation({
+    mutationFn: (payload: AdminLoginPayload) => adminApi.login(payload),
+  });
 
-  return {
-    members: data || [],
-    isLoading,
-    error,
-  };
-};
+export const useAdminOverview = (token: string | null) =>
+  useQuery({
+    queryKey: ['admin-overview', token],
+    queryFn: () => adminApi.overview(token as string),
+    enabled: Boolean(token),
+  });
 
-export const useTeamMember = (id: string) => {
-  const { data, error, isLoading } = useSWR<TeamMember>(
-    id ? `/api/team/${id}` : null,
-    () => teamApi.getById(id),
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 60000,
-    }
-  );
+export const useAdminBookings = (token: string | null) =>
+  useQuery({
+    queryKey: ['admin-bookings', token],
+    queryFn: () => adminApi.listBookings(token as string),
+    enabled: Boolean(token),
+  });
 
-  return {
-    member: data,
-    isLoading,
-    error,
-  };
-};
+export const useAdminMessages = (token: string | null) =>
+  useQuery({
+    queryKey: ['admin-messages', token],
+    queryFn: () => adminApi.listMessages(token as string),
+    enabled: Boolean(token),
+  });
 
-// Testimonial hooks
-export const useTestimonials = () => {
-  const { data, error, isLoading } = useSWR<Testimonial[]>(
-    '/api/testimonials',
-    testimonialApi.getAll,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 60000,
-    }
-  );
+export const useAdminTeamApplications = (token: string | null) =>
+  useQuery({
+    queryKey: ['admin-team-applications', token],
+    queryFn: () => adminApi.listTeamApplications(token as string),
+    enabled: Boolean(token),
+  });
 
-  return {
-    testimonials: data || [],
-    isLoading,
-    error,
-  };
-};
-
-export const useFeaturedTestimonials = () => {
-  const { data, error, isLoading } = useSWR<Testimonial[]>(
-    '/api/testimonials/featured',
-    testimonialApi.getFeatured,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 60000,
-    }
-  );
-
-  return {
-    testimonials: data || [],
-    isLoading,
-    error,
-  };
-};
-
-// Service hooks
-export const useServices = () => {
-  const { data, error, isLoading } = useSWR<Service[]>(
-    '/api/services',
-    serviceApi.getAll,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 60000,
-    }
-  );
-
-  return {
-    services: data || [],
-    isLoading,
-    error,
-  };
-};
-
-export const useService = (id: string) => {
-  const { data, error, isLoading } = useSWR<Service>(
-    id ? `/api/services/${id}` : null,
-    () => serviceApi.getById(id),
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 60000,
-    }
-  );
-
-  return {
-    service: data,
-    isLoading,
-    error,
-  };
-};
-
-// Booking hook
-export const useCreateBooking = () => {
-  const createBooking = async (
-    formData: BookingFormData
-  ): Promise<BookingResponse> => {
-    try {
-      return await bookingApi.create(formData);
-    } catch (error) {
-      console.error('[v0] Booking creation failed:', error);
-      throw error;
-    }
-  };
-
-  return { createBooking };
-};
+export const useAdminServices = (token: string | null) =>
+  useQuery({
+    queryKey: ['admin-services', token],
+    queryFn: () => adminApi.listServices(token as string),
+    enabled: Boolean(token),
+  });

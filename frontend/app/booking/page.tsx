@@ -5,21 +5,19 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import BookingForm from '@/components/BookingForm';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 export default function BookingPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Book Your Project</h1>
-          <p className="text-lg text-white/90 max-w-2xl mx-auto leading-relaxed text-pretty">
-            Let&apos;s discuss your creative vision and bring it to life with our professional media production services.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="Book Your Project"
+        description="Let&apos;s discuss your creative vision and bring it to life with our professional media production services."
+        eyebrow="Project Consultation"
+        variant="blue"
+      />
 
       {/* Main Content */}
       <section className="py-16 md:py-24 bg-background">

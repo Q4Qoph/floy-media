@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { Mail, Phone, MapPin } from 'lucide-react';
 
@@ -12,11 +13,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Company Info */}
           <div>
-            <h3 className="font-serif text-2xl font-light mb-4">
-              FloyMedia
-            </h3>
+            <Link href="/" className="inline-flex mb-4">
+              <Image src="/logo.png" alt="FloyMedia logo" width={80} height={70} className="rounded-md" />
+            </Link>
             <p className="text-xs md:text-sm text-black/70 leading-relaxed">
-              Professional creative media production and digital services for brands that demand excellence.
+              FloyMedia is a creative media production company providing photography, videography, event coverage,
+              corporate shoots, sports media, family photography, product content, and visual storytelling services.
             </p>
           </div>
 
@@ -36,12 +38,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/#services" className="hover:text-black transition-colors">
-                  Editing
+                  Wedding & Event Coverage
                 </Link>
               </li>
               <li>
                 <Link href="/#services" className="hover:text-black transition-colors">
-                  Drone Services
+                  Corporate & Sports Media
                 </Link>
               </li>
             </ul>
@@ -81,13 +83,13 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={16} className="flex-shrink-0" />
-                <a href="tel:+1234567890" className="hover:text-black transition-colors">
-                  +1 (234) 567-890
+                <a href="tel:+254702781292" className="hover:text-black transition-colors">
+                  +254 702 781 292
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin size={16} className="flex-shrink-0 mt-0.5" />
-                <span>New York, USA</span>
+                <span>+254 714 591 221</span>
               </li>
             </ul>
           </div>

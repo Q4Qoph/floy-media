@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ArrowRight, CheckCircle } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 export default function BookingsPage() {
   const [formData, setFormData] = useState({
@@ -33,15 +34,12 @@ export default function BookingsPage() {
 
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-32 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">Book Your Session</h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Schedule your professional photography or videography session with us
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="Book Your Session"
+        description="Book FloyMedia for your next event, shoot, brand project, corporate function, sports coverage, family session, product campaign, or community documentation project."
+        eyebrow="Quick Booking"
+        variant="teal"
+      />
 
       {/* Booking Form Section */}
       <section className="py-20 md:py-32 bg-white">
@@ -100,10 +98,14 @@ export default function BookingsPage() {
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
               >
                 <option value="">Select a service</option>
-                <option value="photography">Professional Photography</option>
-                <option value="videography">Cinematic Videography</option>
-                <option value="editing">Video Editing & Post-Production</option>
-                <option value="drone">Drone Services</option>
+                <option value="photography">Photography</option>
+                <option value="videography">Videography</option>
+                <option value="weddings-events">Wedding & Event Coverage</option>
+                <option value="corporate">Corporate Shoots</option>
+                <option value="sports">Sports Media</option>
+                <option value="family">Family & Lifestyle Shoots</option>
+                <option value="product">Product & Brand Photography</option>
+                <option value="ngo">NGO & Community Documentation</option>
                 <option value="custom">Custom Package</option>
               </select>
             </div>
@@ -131,11 +133,7 @@ export default function BookingsPage() {
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
               >
                 <option value="">Select budget range</option>
-                <option value="under-500">Under $500</option>
-                <option value="500-1000">$500 - $1,000</option>
-                <option value="1000-2500">$1,000 - $2,500</option>
-                <option value="2500-5000">$2,500 - $5,000</option>
-                <option value="5000-plus">$5,000+</option>
+                <option value="tailored">Tailor-made pricing</option>
               </select>
             </div>
 

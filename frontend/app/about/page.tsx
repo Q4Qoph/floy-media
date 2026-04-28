@@ -2,20 +2,18 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Award, Users, Zap } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 export default function AboutPage() {
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-32 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">About FloyMedia</h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Crafting visual stories with creativity, expertise, and cutting-edge technology
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="About FloyMedia"
+        description="We Shoot Your World. We Tell Your Story."
+        eyebrow="Our Identity"
+        variant="indigo"
+      />
 
       {/* Our Story */}
       <section className="py-20 md:py-32 bg-white">
@@ -33,15 +31,16 @@ export default function AboutPage() {
 
             {/* Content */}
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">Who We Are</h2>
               <p className="text-lg text-gray-600 mb-4 leading-relaxed">
-                FloyMedia was founded with a simple mission: to create stunning visual content that tells authentic stories and captures moments that matter. What started as a small creative studio has evolved into a full-service media production company serving brands, businesses, and individuals across diverse industries.
+                FloyMedia is a creative media production company built around photography, videography, storytelling,
+                and digital content creation. We help individuals, families, companies, brands, sports teams, NGOs,
+                schools, churches, and community organizations capture their moments and communicate their stories professionally.
               </p>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                Over the years, we've worked with hundreds of clients, delivered thousands of projects, and earned recognition for our exceptional work. But our greatest achievement is the lasting relationships we've built with our clients and the trust they place in us to bring their visions to life.
-              </p>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Today, we combine traditional photography and videography expertise with cutting-edge AI technology to deliver content that's not just beautiful, but strategically designed to engage and inspire.
+                We believe every person, event, business, and community has a story worth preserving and sharing.
+                Our role is to turn those stories into high-quality photos, videos, digital galleries, and media
+                content for memories, marketing, branding, and communication.
               </p>
             </div>
           </div>
@@ -51,33 +50,41 @@ export default function AboutPage() {
       {/* Our Values */}
       <section className="py-20 md:py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Our Core Values</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Mission, Vision & Core Values</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
+                title: 'Mission',
+                description: 'To provide professional photography, videography, and creative media production services that help clients capture moments, tell stories, promote brands, document impact, and communicate visually with confidence.',
+              },
+              {
+                title: 'Vision',
+                description: 'To become a trusted creative media company in East Africa known for high-quality photography, videography, storytelling, and digital media delivery.',
+              },
+              {
                 title: 'Creativity',
-                description: 'We push creative boundaries and think outside the box to deliver unique, memorable content.',
+                description: 'Creativity in every frame and every story.',
               },
               {
-                title: 'Excellence',
-                description: 'Every project receives our full attention and expertise to ensure outstanding results.',
+                title: 'Professionalism',
+                description: 'Reliable, respectful, and high-standard service delivery.',
               },
               {
-                title: 'Collaboration',
-                description: 'We work closely with our clients to understand their vision and bring it to life.',
+                title: 'Reliability',
+                description: 'We keep our promises and deliver on schedule.',
+              },
+              {
+                title: 'Storytelling',
+                description: 'Every photo and video should communicate meaning and emotion.',
+              },
+              {
+                title: 'Quality',
+                description: 'We focus on polished, professional output for every client.',
               },
               {
                 title: 'Innovation',
-                description: 'We embrace new technologies and techniques to stay ahead of industry trends.',
-              },
-              {
-                title: 'Integrity',
-                description: 'We conduct our business with honesty, transparency, and professional ethics.',
-              },
-              {
-                title: 'Impact',
-                description: 'We create content that makes a difference and drives real results for our clients.',
+                description: 'We continue improving our craft, tools, and delivery.',
               },
             ].map((value, idx) => (
               <div key={idx} className="bg-white p-8 rounded-2xl">
@@ -89,26 +96,15 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 md:py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">By The Numbers</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              { stat: '500+', label: 'Projects Completed' },
-              { stat: '300+', label: 'Happy Clients' },
-              { stat: '15+', label: 'Years Experience' },
-              { stat: '50+', label: 'Team Members' },
-            ].map((item, idx) => (
-              <div key={idx} className="text-center">
-                <div className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent mb-3">
-                  {item.stat}
-                </div>
-                <p className="text-lg text-gray-600">{item.label}</p>
-              </div>
-            ))}
-          </div>
+      {/* Brand Statement */}
+      <section className="py-20 md:py-24 bg-white">
+        <div className="max-w-5xl mx-auto px-6 md:px-8 text-center">
+          <h2 className="text-4xl font-bold text-gray-900 mb-6">Final Brand Statement</h2>
+          <p className="text-lg text-gray-600 leading-relaxed">
+            FloyMedia is a modern creative media company built to capture stories, preserve memories, promote brands,
+            document impact, and deliver professional visual content for people, businesses, organizations, and communities.
+          </p>
+          <p className="text-xl font-semibold text-blue-700 mt-6">FloyMedia: We Shoot Your World. We Tell Your Story.</p>
         </div>
       </section>
 

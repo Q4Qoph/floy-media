@@ -1,11 +1,14 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -19,12 +22,19 @@ export default function Header() {
     { href: '/contact', label: 'Contact' },
   ];
 
+  const getLinkClassName = (href: string) => {
+    const isActive = pathname === href;
+    return `text-sm font-medium transition-colors px-2 py-1 rounded-md ${
+      isActive ? 'text-[#045be2] bg-[#eaf1ff]' : 'text-gray-700 hover:text-[#045be2]'
+    }`;
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100">
-      <nav className="flex items-center justify-between h-16 px-6 md:px-8 max-w-7xl mx-auto">
+      <nav className="flex items-center justify-between h-24 px-6 md:px-8 max-w-7xl mx-auto">
         {/* Logo */}
-        <Link href="/" className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-          FloyMedia
+        <Link href="/" className="flex items-center p-2">
+          <Image src="/logo.png" alt="FloyMedia logo" width={72} height={72} className="rounded-md" />
         </Link>
 
         {/* Desktop Navigation */}
@@ -33,7 +43,7 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+              className={getLinkClassName(link.href)}
             >
               {link.label}
             </Link>
@@ -44,7 +54,7 @@ export default function Header() {
         <div className="hidden md:flex items-center gap-4">
           <Link 
             href="/bookings" 
-            className="text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors px-6 py-2 rounded-lg"
+            className="text-sm font-semibold text-white bg-[#fd780c] hover:bg-[#e76b08] transition-colors px-6 py-2 rounded-lg"
           >
             Book Now
           </Link>
@@ -68,7 +78,9 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors px-3 py-2"
+                className={`text-sm font-medium transition-colors px-3 py-2 rounded-md ${
+                  pathname === link.href ? 'text-[#045be2] bg-[#eaf1ff]' : 'text-gray-700 hover:text-[#045be2]'
+                }`}
                 onClick={() => setIsOpen(false)}
               >
                 {link.label}
@@ -76,7 +88,7 @@ export default function Header() {
             ))}
             <Link 
               href="/bookings" 
-              className="text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors px-6 py-2 rounded-lg text-center mt-4"
+              className="text-sm font-semibold text-white bg-[#fd780c] hover:bg-[#e76b08] transition-colors px-6 py-2 rounded-lg text-center mt-4"
               onClick={() => setIsOpen(false)}
             >
               Book Now

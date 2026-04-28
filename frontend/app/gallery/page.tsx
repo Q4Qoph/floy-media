@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 const categories = ['All', 'Weddings', 'Corporate', 'Sports', 'Family', 'Product', 'Events', 'NGO'];
 
@@ -31,15 +32,12 @@ export default function GalleryPage() {
 
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-32 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">Gallery</h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Explore our portfolio of professional photography and videography across various categories
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="Gallery"
+        description="Explore FloyMedia&apos;s collection of photography and videography projects including weddings, corporate shoots, sports, family sessions, product photography, events, and community work."
+        eyebrow="Portfolio"
+        variant="teal"
+      />
 
       {/* Filter Section */}
       <section className="py-12 md:py-16 bg-white border-b border-gray-200">
@@ -94,7 +92,7 @@ export default function GalleryPage() {
 
           {filteredItems.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-lg text-gray-600">No images found in this category</p>
+              <p className="text-lg text-gray-600">No projects found in this category yet.</p>
             </div>
           )}
         </div>
@@ -103,9 +101,9 @@ export default function GalleryPage() {
       {/* CTA Section */}
       <section className="py-20 md:py-32 bg-gradient-to-r from-blue-600 to-cyan-500">
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Love What You See?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Our Gallery Is Regularly Updated</h2>
           <p className="text-xl text-white/90 mb-8">
-            Let's create something amazing together with your own custom shoot
+            Book FloyMedia for your next wedding, event, corporate shoot, family session, or community project.
           </p>
           <Link href="/bookings" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 font-semibold rounded-lg transition-colors">
             Book Your Session

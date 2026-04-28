@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Mail, Phone, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -31,15 +32,12 @@ export default function ContactPage() {
 
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-32 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">Get In Touch</h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Have questions or ready to start your project? We'd love to hear from you
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="Get In Touch"
+        description="Contact FloyMedia for photography, videography, event coverage, corporate shoots, family photography, sports media, product shoots, and creative content production."
+        eyebrow="Bookings & Inquiries"
+        variant="blue"
+      />
 
       {/* Contact Section */}
       <section className="py-20 md:py-32 bg-white">
@@ -47,7 +45,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-8">Send us a Message</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-8">For Bookings and Inquiries</h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Name */}
@@ -154,7 +152,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2">Email</h3>
                     <p className="text-gray-600">hello@floymedia.com</p>
-                    <p className="text-gray-500 text-sm mt-1">We'll respond within 24 hours</p>
+                    <p className="text-gray-500 text-sm mt-1">We&apos;ll respond within 24 hours</p>
                   </div>
                 </div>
 
@@ -165,8 +163,9 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2">Phone</h3>
-                    <p className="text-gray-600">+1 (555) 123-4567</p>
-                    <p className="text-gray-500 text-sm mt-1">Monday - Friday, 9am - 6pm EST</p>
+                    <p className="text-gray-600">+254 702 781 292</p>
+                    <p className="text-gray-600">+254 714 591 221</p>
+                    <p className="text-gray-500 text-sm mt-1">Call or WhatsApp for faster support</p>
                   </div>
                 </div>
 
@@ -176,10 +175,9 @@ export default function ContactPage() {
                     <MapPin className="text-white" size={24} />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Location</h3>
-                    <p className="text-gray-600">123 Creative Street</p>
-                    <p className="text-gray-600">New York, NY 10001</p>
-                    <p className="text-gray-500 text-sm mt-1">Visit our studio for consultations</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Service Region</h3>
+                    <p className="text-gray-600">East Africa</p>
+                    <p className="text-gray-500 text-sm mt-1">Available for local and destination projects</p>
                   </div>
                 </div>
               </div>

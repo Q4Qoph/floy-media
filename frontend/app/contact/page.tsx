@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { useCreateContactMessage } from '@/lib/hooks';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -14,8 +15,9 @@ export default function ContactPage() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const contactMutation = useCreateContactMessage();
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -23,9 +25,15 @@ export default function ContactPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Message sent:', formData);
+    await contactMutation.mutateAsync({
+      fullName: formData.name,
+      phoneNumber: formData.phone || undefined,
+      email: formData.email,
+      subject: formData.subject,
+      message: formData.message,
+    });
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 3000);
   };
@@ -120,12 +128,19 @@ export default function ContactPage() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-[#045be2] hover:bg-[#034dc2] text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
+                  disabled={contactMutation.isPending}
                 >
-                  Send Message
+                  {contactMutation.isPending ? 'Sending...' : 'Send Message'}
                   <ArrowRight size={20} />
                 </button>
               </form>
+
+              {contactMutation.isError && (
+                <div className="mt-4 p-4 rounded-lg bg-red-50 text-red-700 text-sm border border-red-200">
+                  Failed to send message. Please try again.
+                </div>
+              )}
 
               {/* Success Message */}
               {submitted && (

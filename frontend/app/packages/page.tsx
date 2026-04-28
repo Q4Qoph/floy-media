@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { usePublicPackages } from '@/lib/hooks';
 
 const packages = [
   {
@@ -47,6 +48,17 @@ const packages = [
 ];
 
 export default function PackagesPage() {
+  const { data: apiPackages = [] } = usePublicPackages();
+  const displayedPackages = apiPackages.length
+    ? apiPackages.map((pkg, idx) => ({
+        name: pkg.packageName,
+        price: 'Custom',
+        description: pkg.description || 'Tailor-made package',
+        features: [pkg.category || 'General', pkg.isActive ? 'Active offering' : 'Currently disabled'],
+        highlighted: idx === 1,
+      }))
+    : packages;
+
   return (
     <div className="w-full">
       <PageHero
@@ -60,7 +72,7 @@ export default function PackagesPage() {
       <section className="py-20 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {packages.map((pkg, idx) => (
+            {displayedPackages.map((pkg, idx) => (
               <div
                 key={idx}
                 className={`rounded-2xl p-8 transition-all ${

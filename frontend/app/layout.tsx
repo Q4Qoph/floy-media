@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import AppProviders from '@/components/AppProviders'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -39,12 +40,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="font-sans antialiased bg-background text-foreground flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <AppProviders>
+          <Header />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+          {process.env.NODE_ENV === 'production' && <Analytics />}
+        </AppProviders>
       </body>
     </html>
   )

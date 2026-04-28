@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle, Camera, Film, Scissors, Drone } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { usePublicServices } from '@/lib/hooks';
 
 const services = [
   {
@@ -73,6 +74,23 @@ const services = [
 ];
 
 export default function ServicesPage() {
+  const { data: apiServices = [] } = usePublicServices();
+  const displayedServices = apiServices.length
+    ? apiServices.map((item, idx) => ({
+        id: item.id,
+        title: item.serviceName,
+        icon: [Camera, Film, Scissors, Drone][idx % 4],
+        image: item.imageUrl || ['/images/service-photography.jpg', '/images/service-videography.jpg', '/images/service-editing.jpg', '/images/service-drone.jpg'][idx % 4],
+        description: item.shortDescription || item.fullDescription || 'Professional media service package.',
+        features: (item.fullDescription || item.shortDescription || '')
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .slice(0, 6),
+        pricing: 'Tailor-made pricing',
+      }))
+    : services;
+
   return (
     <div className="w-full">
       <PageHero
@@ -85,7 +103,7 @@ export default function ServicesPage() {
       {/* Services Detail Section */}
       <section className="py-20 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          {services.map((service, index) => {
+          {displayedServices.map((service, index) => {
             const Icon = service.icon;
             const isEven = index % 2 === 0;
             

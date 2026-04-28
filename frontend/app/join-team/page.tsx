@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { useCreateTeamApplication } from '@/lib/hooks';
 
 export default function JoinTeamPage() {
   const [formData, setFormData] = useState({
@@ -16,8 +17,9 @@ export default function JoinTeamPage() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const teamMutation = useCreateTeamApplication();
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -25,9 +27,17 @@ export default function JoinTeamPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Application submitted:', formData);
+    await teamMutation.mutateAsync({
+      fullName: formData.name,
+      phoneNumber: formData.phone,
+      email: formData.email,
+      skillArea: formData.position,
+      experienceLevel: formData.experience,
+      portfolioLink: formData.portfolio || undefined,
+      message: formData.message || undefined,
+    });
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 3000);
   };
@@ -155,12 +165,19 @@ export default function JoinTeamPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+              className="w-full bg-[#045be2] hover:bg-[#034dc2] text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
+              disabled={teamMutation.isPending}
             >
-              Submit Application
+              {teamMutation.isPending ? 'Submitting...' : 'Submit Application'}
               <ArrowRight size={20} />
             </button>
           </form>
+
+          {teamMutation.isError && (
+            <div className="mt-4 p-4 rounded-lg bg-red-50 text-red-700 text-sm border border-red-200">
+              Failed to submit application. Please try again.
+            </div>
+          )}
 
           {/* Success Message */}
           {submitted && (

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { usePublicGallery } from '@/lib/hooks';
 
 const categories = ['All', 'Weddings', 'Corporate', 'Sports', 'Family', 'Product', 'Events', 'NGO'];
 
@@ -24,11 +25,21 @@ const galleryItems = [
 ];
 
 export default function GalleryPage() {
+  const { data: apiGallery = [] } = usePublicGallery();
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const normalizedItems = apiGallery.length
+    ? apiGallery.map((item) => ({
+        id: item.id,
+        category: item.categoryId || 'General',
+        title: item.title,
+        image: item.thumbnailUrl || item.fileUrl || '/images/service-photography.jpg',
+      }))
+    : galleryItems;
+  const dynamicCategories = ['All', ...Array.from(new Set(normalizedItems.map((item) => item.category)))];
 
   const filteredItems = selectedCategory === 'All'
-    ? galleryItems
-    : galleryItems.filter(item => item.category === selectedCategory);
+    ? normalizedItems
+    : normalizedItems.filter(item => item.category === selectedCategory);
 
   return (
     <div className="w-full">
@@ -43,7 +54,7 @@ export default function GalleryPage() {
       <section className="py-12 md:py-16 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="flex flex-wrap gap-3 justify-center">
-            {categories.map((category) => (
+            {dynamicCategories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}

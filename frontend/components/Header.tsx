@@ -9,6 +9,9 @@ import { usePathname } from 'next/navigation';
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const isAdminRoute = pathname.startsWith('/admin');
+
+  if (isAdminRoute) return null;
 
   const navLinks = [
     { href: '/', label: 'Home' },

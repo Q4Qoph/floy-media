@@ -4,12 +4,10 @@ import { useMemo, useState } from 'react';
 import { adminApi } from '@/lib/api';
 import { adminAuth } from '@/lib/admin-auth';
 import { useAdminBookings } from '@/lib/hooks';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ConfirmAction } from '@/components/admin/ConfirmAction';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -60,59 +58,70 @@ export default function AdminBookingsPage() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Bookings</h1>
-        <p className="text-sm text-gray-600">View booking details and update each request from its own edit modal.</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Bookings</h1>
+          <p className="text-sm text-gray-600 mt-1">Manage all booking requests from customers</p>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Booking Requests</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
+      <div className="bg-white rounded-xl border border-gray-200">
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-900">Booking Requests</h2>
+        </div>
+        <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-8"><input type="checkbox" className="rounded border-gray-300" /></TableHead>
                 <TableHead>Client</TableHead>
                 <TableHead>Service</TableHead>
+                <TableHead>Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {(bookings.data || []).map((row) => (
+              {bookings.isLoading
+                ? Array.from({ length: 6 }).map((_, i) => (
+                    <TableRow key={i} className="animate-pulse">
+                      <TableCell><span className="inline-block h-4 w-4 rounded border border-gray-200 bg-gray-100" /></TableCell>
+                      <TableCell>
+                        <div className="h-4 w-32 rounded bg-gray-100 mb-2" />
+                        <div className="h-3 w-24 rounded bg-gray-100" />
+                      </TableCell>
+                      <TableCell><div className="h-3 w-24 rounded bg-gray-100" /></TableCell>
+                      <TableCell><div className="h-3 w-20 rounded bg-gray-100" /></TableCell>
+                      <TableCell><div className="h-5 w-16 rounded-full bg-gray-100" /></TableCell>
+                      <TableCell className="text-right">
+                        <div className="ml-auto h-8 w-20 rounded-full bg-gray-100" />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                : (bookings.data || []).map((row) => (
                 <TableRow key={row.id}>
+                  <TableCell><input type="checkbox" className="rounded border-gray-300" /></TableCell>
                   <TableCell>
                     <p className="font-medium text-gray-900">{row.fullName}</p>
-                    <p className="text-gray-500">{row.email}</p>
+                    <p className="text-sm text-gray-500">{row.email}</p>
                   </TableCell>
                   <TableCell className="text-gray-700">{row.serviceRequired}</TableCell>
-                  <TableCell><Badge variant="secondary">{row.status}</Badge></TableCell>
+                  <TableCell className="text-sm text-gray-600">{row.projectDate || 'Not set'}</TableCell>
+                  <TableCell><Badge variant={row.status?.toLowerCase() === 'confirmed' ? 'approved' : 'secondary'}>{row.status || 'New'}</Badge></TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button type="button" size="sm" onClick={() => openEdit(row)}>Review</Button>
-                      <ConfirmAction
-                        triggerLabel="Delete"
-                        title="Delete booking?"
-                        description="This action cannot be undone."
-                        onConfirm={() => deleteRow(row.id)}
-                        variant="destructive"
-                        disabled={busyId === row.id}
-                      />
+                      <Button type="button" size="sm" variant="outline" onClick={() => openEdit(row)}>Review</Button>
                     </div>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-          {bookings.isLoading ? <p className="pt-4 text-sm text-gray-500">Loading bookings...</p> : null}
-          {!bookings.isLoading && !(bookings.data || []).length ? (
-            <div className="py-8 text-center">
+          {!bookings.isLoading && !(bookings.data || []).length && (
+            <div className="px-6 py-12 text-center">
               <p className="text-sm text-gray-500">No bookings yet.</p>
             </div>
-          ) : null}
-        </CardContent>
-      </Card>
+          )}
+      </div>
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="sm:max-w-2xl">
@@ -151,7 +160,7 @@ export default function AdminBookingsPage() {
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setEditOpen(false)}>Cancel</Button>
             <Button type="button" onClick={updateRow} disabled={busyId === selectedBooking?.id} className="bg-[#045be2] hover:bg-[#034dc2]">
-              Save Update
+              {busyId === selectedBooking?.id ? 'Saving...' : 'Save Update'}
             </Button>
           </DialogFooter>
         </DialogContent>

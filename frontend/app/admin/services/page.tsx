@@ -78,56 +78,66 @@ export default function AdminServicesPage() {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Services</h1>
-          <p className="text-sm text-gray-600">Manage services with image uploads.</p>
+          <h1 className="text-3xl font-bold text-gray-900">Services</h1>
+          <p className="text-sm text-gray-600 mt-1">Manage all service offerings with images and descriptions.</p>
         </div>
-        <Button type="button" onClick={openCreate} className="bg-[#045be2] hover:bg-[#034dc2]">
-          Add Service
+        <Button type="button" onClick={openCreate} className="bg-[#045be2] hover:bg-[#034dc2] text-white">
+          + Add Service
         </Button>
       </div>
 
-      {notice ? <p className="text-sm text-gray-600">{notice}</p> : null}
+      {notice && <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">{notice}</div>}
 
-      <div className="bg-white border border-gray-200 rounded-xl p-5">
-        <h2 className="text-lg font-semibold mb-3">Current Services</h2>
-        {services.isLoading ? <p className="text-sm text-gray-500">Loading...</p> : null}
+      {services.isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-56 bg-gray-100 rounded-xl animate-pulse"></div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           {(services.data || []).map((s) => (
-            <div key={s.id} className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-              <div className="relative h-40 bg-gray-100">
+            <div key={s.id} className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-[#045be2] transition-all group">
+              <div className="relative h-44 bg-gray-100 overflow-hidden">
                 {s.imageUrl ? (
-                  <Image src={mediaUrl(s.imageUrl)} alt={s.serviceName} fill className="object-cover" />
+                  <Image src={mediaUrl(s.imageUrl)} alt={s.serviceName} fill className="object-cover group-hover:scale-105 transition-transform duration-200" />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-sm text-gray-400">No service image</div>
+                  <div className="flex h-full items-center justify-center text-sm text-gray-400">No image</div>
                 )}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200"></div>
               </div>
-              <div className="p-4">
-                <p className="text-sm font-medium text-gray-900">{s.serviceName}</p>
-                <p className="mt-1 line-clamp-2 text-xs text-gray-500">{s.shortDescription || s.fullDescription || 'No description yet.'}</p>
-                <div className="mt-3 flex items-center justify-between gap-2">
-                  <span className={`rounded-full px-2 py-1 text-xs ${s.isActive ? 'bg-blue-50 text-[#045be2]' : 'bg-gray-100 text-gray-600'}`}>
+              <div className="p-5">
+                <p className="font-semibold text-gray-900 mb-1">{s.serviceName}</p>
+                <p className="line-clamp-2 text-sm text-gray-600 mb-3">{s.shortDescription || s.fullDescription || 'No description'}</p>
+                <div className="mb-4">
+                  <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${s.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
                     {s.isActive ? 'Active' : 'Inactive'}
                   </span>
-                  <div className="flex gap-2">
-                    <Button type="button" size="sm" variant="outline" onClick={() => startEdit(s)}>Edit</Button>
-                    <ConfirmAction
-                      triggerLabel="Delete"
-                      title="Delete service?"
-                      description="This action cannot be undone."
-                      onConfirm={() => act(() => adminApi.deleteService(token as string, s.id), 'Service deleted.')}
-                      variant="destructive"
-                      disabled={busy}
-                    />
-                  </div>
+                </div>
+                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button type="button" size="sm" variant="outline" onClick={() => startEdit(s)} className="flex-1">Edit</Button>
+                  <ConfirmAction
+                    triggerLabel="Delete"
+                    title="Delete service?"
+                    description="This action cannot be undone."
+                    onConfirm={() => act(() => adminApi.deleteService(token as string, s.id), 'Service deleted.')}
+                    variant="destructive"
+                    disabled={busy}
+                  />
                 </div>
               </div>
             </div>
           ))}
         </div>
-      </div>
+      )}
+      {!services.isLoading && !services.data?.length && (
+        <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
+          <p className="text-gray-500">No services yet. Create one to get started.</p>
+        </div>
+      )}
 
       <Dialog open={formOpen} onOpenChange={(open) => {
         setFormOpen(open);
@@ -140,15 +150,32 @@ export default function AdminServicesPage() {
               Keep service names, descriptions, display order, and imagery up to date.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-3">
-          <input value={form.serviceName} onChange={(e) => setForm({ ...form, serviceName: e.target.value })} placeholder="Service Name" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-2" />
-          <input value={form.shortDescription} onChange={(e) => setForm({ ...form, shortDescription: e.target.value })} placeholder="Short Description" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-2" />
-          <textarea value={form.fullDescription} onChange={(e) => setForm({ ...form, fullDescription: e.target.value })} placeholder="Full Description" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm h-28 mb-2" />
-          <div className="flex items-center gap-3 mb-2">
-            <input type="number" value={form.displayOrder} onChange={(e) => setForm({ ...form, displayOrder: Number(e.target.value) || 0 })} className="w-40 border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-            <label className="text-sm flex items-center gap-2"><input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} /> Active</label>
+          <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Service Name *</label>
+            <input value={form.serviceName} onChange={(e) => setForm({ ...form, serviceName: e.target.value })} placeholder="e.g., Wedding Videography" className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50" />
           </div>
-          <input type="file" onChange={(e) => setImage(e.target.files?.[0] || null)} className="mb-3" />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Short Description</label>
+            <input value={form.shortDescription} onChange={(e) => setForm({ ...form, shortDescription: e.target.value })} placeholder="Brief overview for listings" className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Full Description</label>
+            <textarea value={form.fullDescription} onChange={(e) => setForm({ ...form, fullDescription: e.target.value })} placeholder="Detailed information about this service" className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm h-28 focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50 resize-none" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Display Order</label>
+              <input type="number" value={form.displayOrder} onChange={(e) => setForm({ ...form, displayOrder: Number(e.target.value) || 0 })} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50" />
+            </div>
+            <div className="flex items-end">
+              <label className="text-sm font-medium flex items-center gap-2.5 cursor-pointer px-4 py-2.5 bg-gray-50 rounded-lg border border-gray-300 w-full"><input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="rounded" /> <span>Active</span></label>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Service Image</label>
+            <input type="file" onChange={(e) => setImage(e.target.files?.[0] || null)} className="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-[#045be2] hover:file:bg-blue-100 cursor-pointer" />
+          </div>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setFormOpen(false)}>Cancel</Button>

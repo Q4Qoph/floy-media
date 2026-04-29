@@ -91,61 +91,72 @@ export default function AdminVideosPage() {
     <div className="space-y-5">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Videos</h1>
-          <p className="text-sm text-gray-600">Manage video highlights shown on the website.</p>
+          <h1 className="text-3xl font-bold text-gray-900">Videos</h1>
+          <p className="text-sm text-gray-600 mt-1">Manage video highlights shown on the website.</p>
         </div>
-        <Button type="button" onClick={openCreate} className="bg-[#045be2] hover:bg-[#034dc2]">
+        <Button type="button" onClick={openCreate} className="bg-[#045be2] hover:bg-[#034dc2] text-white">
           Add Video
         </Button>
       </div>
 
       {notice ? <p className="text-sm text-gray-600">{notice}</p> : null}
 
-      <div className="bg-white border border-gray-200 rounded-xl p-5">
-        <h2 className="text-lg font-semibold mb-3">Current Videos</h2>
-          {videos.isLoading ? <p className="text-sm text-gray-500">Loading...</p> : null}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="">
+        {videos.isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="rounded-xl border border-gray-200 bg-gray-50 h-72 animate-pulse"></div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {(videos.data || []).map((v) => {
               const thumbnail = mediaUrl(v.thumbnailUrl);
               const videoSrc = mediaUrl(v.videoUrl);
               return (
-              <div key={v.id} className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-                <div className="relative h-44 bg-gray-100">
+              <div key={v.id} className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-[#045be2] transition-all duration-200 group">
+                <div className="relative h-48 bg-gray-100 overflow-hidden">
                   {thumbnail ? (
-                    <Image src={thumbnail} alt={v.title} fill className="object-cover" />
+                    <Image src={thumbnail} alt={v.title} fill className="object-cover group-hover:scale-105 transition-transform duration-200" />
                   ) : videoSrc ? (
-                    <video src={videoSrc} className="h-full w-full object-cover" controls muted />
+                    <video src={videoSrc} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200" controls muted />
                   ) : (
                     <div className="flex h-full items-center justify-center text-sm text-gray-400">No video file</div>
                   )}
-                  <span className="absolute left-3 top-3 rounded-full bg-black/70 px-2.5 py-1 text-xs font-medium text-white">
-                    Video
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200"></div>
+                  <span className="absolute left-3 top-3 rounded-lg bg-black/70 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
+                    VIDEO
                   </span>
                 </div>
-                <div className="p-4">
-                  <p className="font-medium text-gray-900">{v.title}</p>
-                  <p className="mt-1 line-clamp-2 text-sm text-gray-500">{v.description || 'No description yet.'}</p>
-                  <div className="mt-3 flex items-center justify-between gap-2">
-                    <div className="flex gap-2 text-xs">
-                      {v.isFeatured ? <span className="rounded-full bg-blue-50 px-2 py-1 text-[#045be2]">Featured</span> : null}
-                      {v.isPublic === false ? <span className="rounded-full bg-gray-100 px-2 py-1 text-gray-600">Hidden</span> : null}
-                    </div>
-                    <div className="flex gap-2">
-                      <Button type="button" size="sm" variant="outline" onClick={() => startEdit(v)}>Edit</Button>
-                  <ConfirmAction
-                    triggerLabel="Delete"
-                    title="Delete video?"
-                    description="This action cannot be undone."
-                    onConfirm={() => doCall(() => adminApi.deleteVideo(token as string, v.id), 'Video deleted.')}
-                    variant="destructive"
-                  />
-                    </div>
+                <div className="p-5">
+                  <p className="font-semibold text-gray-900 line-clamp-2 mb-2">{v.title}</p>
+                  <p className="line-clamp-2 text-sm text-gray-600 mb-3">{v.description || 'No description yet.'}</p>
+                  {v.clientName && <p className="text-xs text-gray-500 mb-3">Client: <span className="font-medium text-gray-700">{v.clientName}</span></p>}
+                  <div className="flex gap-2 mb-4 flex-wrap">
+                    {v.isFeatured && <span className="inline-block rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-[#045be2]">Featured</span>}
+                    {v.isPublic === false && <span className="inline-block rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">Hidden</span>}
+                  </div>
+                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button type="button" size="sm" variant="outline" onClick={() => startEdit(v)} className="flex-1">Edit</Button>
+                    <ConfirmAction
+                      triggerLabel="Delete"
+                      title="Delete video?"
+                      description="This action cannot be undone."
+                      onConfirm={() => doCall(() => adminApi.deleteVideo(token as string, v.id), 'Video deleted.')}
+                      variant="destructive"
+                    />
                   </div>
                 </div>
               </div>
               );
             })}
           </div>
+        )}
+        {!videos.isLoading && !videos.data?.length && (
+          <div className="text-center py-12">
+            <p className="text-sm text-gray-500">No videos yet. Add one to get started.</p>
+          </div>
+        )}
       </div>
 
       <Dialog open={formOpen} onOpenChange={(open) => {
@@ -159,22 +170,40 @@ export default function AdminVideosPage() {
               Add the video details, choose visibility, and attach the video or thumbnail files.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-3">
-          <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Video title" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-2" />
-          <select value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-2">
-            <option value="">No category</option>
-            {(categories.data || []).map((category) => (
-              <option key={category.id} value={category.id}>{category.name}</option>
-            ))}
-          </select>
-          <input value={form.clientName} onChange={(e) => setForm({ ...form, clientName: e.target.value })} placeholder="Client name (optional)" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-2" />
-          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Description" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm h-24 mb-2" />
-          <div className="flex items-center gap-4 mb-2">
-            <label className="text-sm flex items-center gap-2"><input type="checkbox" checked={form.isPublic} onChange={(e) => setForm({ ...form, isPublic: e.target.checked })} /> Public</label>
-            <label className="text-sm flex items-center gap-2"><input type="checkbox" checked={form.isFeatured} onChange={(e) => setForm({ ...form, isFeatured: e.target.checked })} /> Featured</label>
+          <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Video Title *</label>
+            <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Memorable video title" className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition" />
           </div>
-          <input type="file" onChange={(e) => setVideo(e.target.files?.[0] || null)} className="mb-2" />
-          <input type="file" onChange={(e) => setThumbnail(e.target.files?.[0] || null)} className="mb-3" />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+            <select value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition">
+              <option value="">No category</option>
+              {(categories.data || []).map((category) => (
+                <option key={category.id} value={category.id}>{category.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Client Name</label>
+            <input value={form.clientName} onChange={(e) => setForm({ ...form, clientName: e.target.value })} placeholder="Client name (optional)" className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Tell viewers what this video is about" className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm h-24 focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition resize-none" />
+          </div>
+          <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+            <label className="text-sm font-medium flex items-center gap-2.5 cursor-pointer"><input type="checkbox" checked={form.isPublic} onChange={(e) => setForm({ ...form, isPublic: e.target.checked })} className="rounded" /> <span>Public</span></label>
+            <label className="text-sm font-medium flex items-center gap-2.5 cursor-pointer"><input type="checkbox" checked={form.isFeatured} onChange={(e) => setForm({ ...form, isFeatured: e.target.checked })} className="rounded" /> <span>Featured</span></label>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Video File</label>
+            <input type="file" onChange={(e) => setVideo(e.target.files?.[0] || null)} className="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-[#045be2] hover:file:bg-blue-100 cursor-pointer" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Thumbnail (optional)</label>
+            <input type="file" onChange={(e) => setThumbnail(e.target.files?.[0] || null)} className="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
+          </div>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setFormOpen(false)}>Cancel</Button>

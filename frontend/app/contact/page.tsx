@@ -65,7 +65,7 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50"
                     placeholder="Your name"
                   />
                 </div>
@@ -79,7 +79,7 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -92,7 +92,7 @@ export default function ContactPage() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50"
                     placeholder="+1 (555) 000-0000"
                   />
                 </div>
@@ -106,7 +106,7 @@ export default function ContactPage() {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50"
                     placeholder="What is this about?"
                   />
                 </div>
@@ -120,7 +120,7 @@ export default function ContactPage() {
                     onChange={handleChange}
                     required
                     rows={5}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50 resize-none"
                     placeholder="Your message..."
                   />
                 </div>
@@ -128,11 +128,11 @@ export default function ContactPage() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-[#045be2] hover:bg-[#034dc2] text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
+                  className="w-full bg-[#045be2] hover:bg-[#034dc2] text-white font-semibold py-3.5 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-md hover:shadow-lg"
                   disabled={contactMutation.isPending}
                 >
                   {contactMutation.isPending ? 'Sending...' : 'Send Message'}
-                  <ArrowRight size={20} />
+                  {!contactMutation.isPending && <ArrowRight size={20} />}
                 </button>
               </form>
 
@@ -160,39 +160,39 @@ export default function ContactPage() {
 
               <div className="space-y-8">
                 {/* Email */}
-                <div className="flex gap-6">
-                  <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="flex gap-5 p-5 rounded-xl bg-blue-50 border border-blue-100">
+                  <div className="w-12 h-12 bg-[#045be2] rounded-lg flex items-center justify-center flex-shrink-0">
                     <Mail className="text-white" size={24} />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Email</h3>
-                    <p className="text-gray-600">hello@floymedia.com</p>
-                    <p className="text-gray-500 text-sm mt-1">We&apos;ll respond within 24 hours</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">Email</h3>
+                    <p className="text-gray-700 font-medium">hello@floymedia.com</p>
+                    <p className="text-gray-600 text-sm mt-1">We&apos;ll respond within 24 hours</p>
                   </div>
                 </div>
 
                 {/* Phone */}
-                <div className="flex gap-6">
-                  <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="flex gap-5 p-5 rounded-xl bg-blue-50 border border-blue-100">
+                  <div className="w-12 h-12 bg-[#045be2] rounded-lg flex items-center justify-center flex-shrink-0">
                     <Phone className="text-white" size={24} />
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2">Phone</h3>
-                    <p className="text-gray-600">+254 702 781 292</p>
-                    <p className="text-gray-600">+254 714 591 221</p>
-                    <p className="text-gray-500 text-sm mt-1">Call or WhatsApp for faster support</p>
+                    <p className="text-gray-700 font-medium">+254 702 781 292</p>
+                    <p className="text-gray-700 font-medium">+254 714 591 221</p>
+                    <p className="text-gray-600 text-sm mt-1">Call or WhatsApp for faster support</p>
                   </div>
                 </div>
 
                 {/* Location */}
-                <div className="flex gap-6">
-                  <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="flex gap-5 p-5 rounded-xl bg-blue-50 border border-blue-100">
+                  <div className="w-12 h-12 bg-[#045be2] rounded-lg flex items-center justify-center flex-shrink-0">
                     <MapPin className="text-white" size={24} />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Service Region</h3>
-                    <p className="text-gray-600">East Africa</p>
-                    <p className="text-gray-500 text-sm mt-1">Available for local and destination projects</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">Service Region</h3>
+                    <p className="text-gray-700 font-medium">East Africa</p>
+                    <p className="text-gray-600 text-sm mt-1">Available for local and destination projects</p>
                   </div>
                 </div>
               </div>

@@ -72,14 +72,14 @@ export default function AdminPackagesPage() {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Packages</h1>
-          <p className="text-sm text-gray-600">Create and manage package offerings.</p>
+          <h1 className="text-3xl font-bold text-gray-900">Packages</h1>
+          <p className="text-sm text-gray-600 mt-1">Create and manage service packages.</p>
         </div>
-        <Button type="button" onClick={openCreate} className="bg-[#045be2] hover:bg-[#034dc2]">
-          Add Package
+        <Button type="button" onClick={openCreate} className="bg-[#045be2] hover:bg-[#034dc2] text-white">
+          + Add Package
         </Button>
       </div>
 
@@ -113,40 +113,45 @@ export default function AdminPackagesPage() {
         </DialogContent>
       </Dialog>
 
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="text-left px-4 py-3">Package</th>
-              <th className="text-left px-4 py-3">Category</th>
-              <th className="text-left px-4 py-3">Status</th>
-              <th className="text-right px-4 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(packagesQuery.data || []).map((row) => (
-              <tr key={row.id} className="border-t border-gray-100">
-                <td className="px-4 py-3">
-                  <p className="font-medium text-gray-900">{row.packageName}</p>
-                  <p className="text-gray-500">{row.description}</p>
-                </td>
-                <td className="px-4 py-3">{row.category || 'General'}</td>
-                <td className="px-4 py-3">{row.isActive ? 'Active' : 'Inactive'}</td>
-                <td className="px-4 py-3 text-right space-x-2">
-                  <button onClick={() => startEdit(row)} className="px-3 py-1.5 rounded-lg bg-gray-900 text-white">Edit</button>
-                  <ConfirmAction
-                    triggerLabel="Delete"
-                    title="Delete package?"
-                    description="This action cannot be undone."
-                    onConfirm={() => remove(row.id)}
-                    variant="destructive"
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {packagesQuery.isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-48 bg-gray-100 rounded-lg animate-pulse"></div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {(packagesQuery.data || []).map((row) => (
+            <div key={row.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md hover:border-[#045be2] transition-all group">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">{row.packageName}</h3>
+                  <p className="text-sm text-gray-600">{row.category || 'General'}</p>
+                </div>
+                <div className={`px-3 py-1.5 rounded-full text-xs font-semibold ${row.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                  {row.isActive ? 'Active' : 'Inactive'}
+                </div>
+              </div>
+              {row.description && <p className="text-sm text-gray-600 mb-4 line-clamp-2">{row.description}</p>}
+              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button type="button" size="sm" variant="outline" onClick={() => startEdit(row)} className="flex-1">Edit</Button>
+                <ConfirmAction
+                  triggerLabel="Delete"
+                  title="Delete package?"
+                  description="This action cannot be undone."
+                  onConfirm={() => remove(row.id)}
+                  variant="destructive"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {!packagesQuery.isLoading && !packagesQuery.data?.length && (
+        <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
+          <p className="text-gray-500">No packages yet. Create one to get started.</p>
+        </div>
+      )}
     </div>
   );
 }

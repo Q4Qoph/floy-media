@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { adminAuth } from '@/lib/admin-auth';
-import { LayoutGrid, FileText, ImageIcon, Video, Wrench, Mail, Users, Package, FolderOpen, LogOut, Search, Bell } from 'lucide-react';
+import { LayoutGrid, FileText, ImageIcon, Video, Wrench, Mail, Users, Package, FolderOpen, LogOut, Search, Bell, Images } from 'lucide-react';
 
 const links = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutGrid },
@@ -12,6 +12,7 @@ const links = [
   { href: '/admin/gallery', label: 'Gallery', icon: ImageIcon },
   { href: '/admin/videos', label: 'Videos', icon: Video },
   { href: '/admin/services', label: 'Services', icon: Wrench },
+  { href: '/admin/hero', label: 'Homepage Hero', icon: Images },
   { href: '/admin/messages', label: 'Messages', icon: Mail },
   { href: '/admin/team-applications', label: 'Team Applications', icon: Users },
   { href: '/admin/packages', label: 'Packages', icon: Package },

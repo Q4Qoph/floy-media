@@ -9,10 +9,22 @@ export const usePublicServices = () =>
     queryFn: publicApi.listServices,
   });
 
+export const usePublicHeroSection = () =>
+  useQuery({
+    queryKey: ['public-hero-section'],
+    queryFn: publicApi.getHeroSection,
+  });
+
 export const usePublicGallery = () =>
   useQuery({
     queryKey: ['public-gallery'],
     queryFn: publicApi.listGallery,
+  });
+
+export const usePublicFeaturedGallery = () =>
+  useQuery({
+    queryKey: ['public-featured-gallery'],
+    queryFn: publicApi.listFeaturedGallery,
   });
 
 export const usePublicVideos = () =>
@@ -79,5 +91,12 @@ export const useAdminServices = (token: string | null) =>
   useQuery({
     queryKey: ['admin-services', token],
     queryFn: () => adminApi.listServices(token as string),
+    enabled: Boolean(token),
+  });
+
+export const useAdminHeroSection = (token: string | null) =>
+  useQuery({
+    queryKey: ['admin-hero-section', token],
+    queryFn: () => adminApi.getHeroSection(token as string),
     enabled: Boolean(token),
   });

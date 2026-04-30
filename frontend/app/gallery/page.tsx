@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import PageHero from '@/components/PageHero';
 import { usePublicGallery } from '@/lib/hooks';
+import { mediaUrl } from '@/lib/api';
 
 const categories = ['All', 'Weddings', 'Corporate', 'Sports', 'Family', 'Product', 'Events', 'NGO'];
 
@@ -30,9 +31,9 @@ export default function GalleryPage() {
   const normalizedItems = apiGallery.length
     ? apiGallery.map((item) => ({
         id: item.id,
-        category: item.categoryId || 'General',
+        category: item.categoryName || item.category?.name || 'General',
         title: item.title,
-        image: item.thumbnailUrl || item.fileUrl || '/images/service-photography.jpg',
+        image: mediaUrl(item.thumbnailUrl || item.fileUrl) || '/images/service-photography.jpg',
       }))
     : galleryItems;
   const dynamicCategories = ['All', ...Array.from(new Set(normalizedItems.map((item) => item.category)))];

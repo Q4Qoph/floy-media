@@ -5,91 +5,27 @@ import Link from 'next/link';
 import { ArrowRight, CheckCircle, Camera, Film, Scissors, Drone } from 'lucide-react';
 import PageHero from '@/components/PageHero';
 import { usePublicServices } from '@/lib/hooks';
-
-const services = [
-  {
-    id: 1,
-    title: 'Photography',
-    icon: Camera,
-    image: '/images/service-photography.jpg',
-    description: 'Wedding, family, portraits, events, corporate, sports, products, lifestyle.',
-    features: [
-      'Wedding shoots',
-      'Family portraits',
-      'Corporate photography',
-      'Sports photography',
-      'Product and lifestyle shoots',
-      'Edited high-quality delivery',
-    ],
-    pricing: 'Tailor-made pricing',
-  },
-  {
-    id: 2,
-    title: 'Videography',
-    icon: Film,
-    image: '/images/service-videography.jpg',
-    description: 'Wedding films, events, corporate videos, brand stories, documentaries, reels.',
-    features: [
-      'Wedding and event films',
-      'Corporate videos',
-      'Brand stories and reels',
-      'Documentary style production',
-      'Highlights and social clips',
-      'Professional post production',
-    ],
-    pricing: 'Tailor-made pricing',
-  },
-  {
-    id: 3,
-    title: 'Wedding & Events',
-    icon: Scissors,
-    image: '/images/service-editing.jpg',
-    description: 'Full coverage, highlights, albums, private galleries, social media clips.',
-    features: [
-      'Full event-day coverage',
-      'Highlight reels',
-      'Private galleries',
-      'Albums and photo packages',
-      'Social media clips',
-      'Fast turnaround options',
-    ],
-    pricing: 'Tailor-made pricing',
-  },
-  {
-    id: 4,
-    title: 'Corporate Shoots',
-    icon: Drone,
-    image: '/images/service-drone.jpg',
-    description: 'Headshots, team photos, office shoots, company profiles, testimonials.',
-    features: [
-      'Executive and staff headshots',
-      'Team and office photography',
-      'Company profile videos',
-      'Client testimonials',
-      'Event and conference coverage',
-      'Brand-ready media kits',
-    ],
-    pricing: 'Tailor-made pricing',
-  },
-];
+import { mediaUrl } from '@/lib/api';
 
 export default function ServicesPage() {
-  const { data: apiServices = [] } = usePublicServices();
-  const displayedServices = apiServices.length
-    ? apiServices.map((item, idx) => ({
-        id: item.id,
-        title: item.serviceName,
-        icon: [Camera, Film, Scissors, Drone][idx % 4],
-        image: item.imageUrl || ['/images/service-photography.jpg', '/images/service-videography.jpg', '/images/service-editing.jpg', '/images/service-drone.jpg'][idx % 4],
-        description: item.shortDescription || item.fullDescription || 'Professional media service package.',
-        features: (item.fullDescription || item.shortDescription || '')
-          .split(',')
+  const { data: apiServices = [], isLoading } = usePublicServices();
+  const displayedServices = apiServices.map((item, idx) => ({
+    id: item.id,
+    title: item.serviceName,
+    icon: [Camera, Film, Scissors, Drone][idx % 4],
+    image:
+      mediaUrl(item.imageUrl) ||
+      ['/images/service-photography.jpg', '/images/service-videography.jpg', '/images/service-editing.jpg', '/images/service-drone.jpg'][idx % 4],
+    description: item.shortDescription || item.fullDescription || 'Professional media service package.',
+    features: (item.includedItems && item.includedItems.length
+      ? item.includedItems
+      : (item.fullDescription || '')
+          .split(/\r?\n|,/)
           .map((s) => s.trim())
           .filter(Boolean)
-          .slice(0, 6),
-        pricing: 'Tailor-made pricing',
-      }))
-    : services;
+    ).slice(0, 6),
+    pricing: 'Tailor-made pricing',
+  }));
 
   return (
     <div className="w-full">
@@ -103,7 +39,17 @@ export default function ServicesPage() {
       {/* Services Detail Section */}
       <section className="py-20 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          {displayedServices.map((service, index) => {
+          {isLoading && (
+            <div className="py-20 text-center text-gray-500">Loading services...</div>
+          )}
+
+          {!isLoading && displayedServices.length === 0 && (
+            <div className="py-20 text-center text-gray-500">
+              No services available yet.
+            </div>
+          )}
+
+          {!isLoading && displayedServices.map((service, index) => {
             const Icon = service.icon;
             const isEven = index % 2 === 0;
             
@@ -196,7 +142,7 @@ export default function ServicesPage() {
                 key={idx}
                 className={`rounded-2xl p-8 transition-all ${
                   pkg.highlighted
-                    ? 'bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-xl'
+                    ? 'bg-gradient-to-br from-blue-600 to-cyan-500 text-white'
                     : 'bg-white border-2 border-gray-200 hover:border-blue-300'
                 }`}
               >

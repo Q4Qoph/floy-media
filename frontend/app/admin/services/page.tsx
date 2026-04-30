@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAdminServices } from '@/lib/hooks';
 import { adminAuth } from '@/lib/admin-auth';
 import { adminApi, mediaUrl } from '@/lib/api';
@@ -23,19 +23,24 @@ export default function AdminServicesPage() {
   const [form, setForm] = useState({
     serviceName: '',
     shortDescription: '',
-    fullDescription: '',
+    includedItemsText: '',
     displayOrder: 1,
     isActive: true,
   });
   const [image, setImage] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const sortedServices = [...(services.data || [])].sort(
+    (a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0)
+  );
 
   const reset = () => {
     setEditingId(null);
-    setForm({ serviceName: '', shortDescription: '', fullDescription: '', displayOrder: 1, isActive: true });
+    setForm({ serviceName: '', shortDescription: '', includedItemsText: '', displayOrder: 1, isActive: true });
     setImage(null);
+    setImagePreviewUrl('');
   };
 
   const openCreate = () => {
@@ -44,16 +49,32 @@ export default function AdminServicesPage() {
   };
 
   const startEdit = (service: any) => {
+    const legacyIncludedItems = String(service.fullDescription || '')
+      .split(/\r?\n|,/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+
     setEditingId(service.id);
+    setImage(null);
+    setImagePreviewUrl(mediaUrl(service.imageUrl));
     setForm({
       serviceName: service.serviceName || '',
       shortDescription: service.shortDescription || '',
-      fullDescription: service.fullDescription || '',
+      includedItemsText: Array.isArray(service.includedItems)
+        ? service.includedItems.join('\n')
+        : legacyIncludedItems.join('\n'),
       displayOrder: service.displayOrder || 1,
       isActive: service.isActive ?? true,
     });
     setFormOpen(true);
   };
+
+  useEffect(() => {
+    if (!image) return;
+    const objectUrl = URL.createObjectURL(image);
+    setImagePreviewUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [image]);
 
   const act = async (fn: () => Promise<unknown>, message: string) => {
     setBusy(true);
@@ -72,8 +93,12 @@ export default function AdminServicesPage() {
 
   const buildFormData = () => {
     const fd = new FormData();
-    Object.entries(form).forEach(([k, v]) => fd.append(k, String(v)));
-    if (image) fd.append('image', image);
+    fd.append('serviceName', form.serviceName);
+    fd.append('shortDescription', form.shortDescription);
+    fd.append('includedItems', form.includedItemsText);
+    fd.append('displayOrder', String(form.displayOrder));
+    fd.append('isActive', String(form.isActive));
+    if (image) fd.append('image', image, image.name);
     return fd;
   };
 
@@ -92,48 +117,87 @@ export default function AdminServicesPage() {
       {notice && <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">{notice}</div>}
 
       {services.isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-56 bg-gray-100 rounded-xl animate-pulse"></div>
+            <div key={i} className="h-72 bg-gray-100 rounded-2xl animate-pulse"></div>
           ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {(services.data || []).map((s) => (
-            <div key={s.id} className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-[#045be2] transition-all group">
-              <div className="relative h-44 bg-gray-100 overflow-hidden">
-                {s.imageUrl ? (
-                  <Image src={mediaUrl(s.imageUrl)} alt={s.serviceName} fill className="object-cover group-hover:scale-105 transition-transform duration-200" />
-                ) : (
-                  <div className="flex h-full items-center justify-center text-sm text-gray-400">No image</div>
-                )}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200"></div>
-              </div>
-              <div className="p-5">
-                <p className="font-semibold text-gray-900 mb-1">{s.serviceName}</p>
-                <p className="line-clamp-2 text-sm text-gray-600 mb-3">{s.shortDescription || s.fullDescription || 'No description'}</p>
-                <div className="mb-4">
-                  <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${s.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                    {s.isActive ? 'Active' : 'Inactive'}
-                  </span>
+          {sortedServices.map((s) => {
+            const includedItems = Array.isArray(s.includedItems)
+              ? s.includedItems
+              : String(s.fullDescription || '')
+                  .split(/\r?\n|,/)
+                  .map((item) => item.trim())
+                  .filter(Boolean);
+            return (
+              <div
+                key={s.id}
+                className="group overflow-hidden rounded-2xl border border-gray-200 bg-white hover:border-[#045be2] transition-all"
+              >
+                <div className="relative h-44 bg-gray-100 overflow-hidden">
+                  {s.imageUrl ? (
+                    <Image src={mediaUrl(s.imageUrl)} alt={s.serviceName} fill className="object-cover" />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-sm text-gray-400">No image</div>
+                  )}
                 </div>
-                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button type="button" size="sm" variant="outline" onClick={() => startEdit(s)} className="flex-1">Edit</Button>
-                  <ConfirmAction
-                    triggerLabel="Delete"
-                    title="Delete service?"
-                    description="This action cannot be undone."
-                    onConfirm={() => act(() => adminApi.deleteService(token as string, s.id), 'Service deleted.')}
-                    variant="destructive"
-                    disabled={busy}
-                  />
+
+                <div className="p-5">
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <p className="font-semibold text-gray-900">{s.serviceName}</p>
+                    <span className="inline-flex rounded-md border border-gray-200 px-2 py-1 text-xs text-gray-700">
+                      #{s.displayOrder ?? 0}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                    {s.shortDescription || 'No short description'}
+                  </p>
+
+                  <div className="mb-4">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
+                      What's Included
+                    </p>
+                    {includedItems.length ? (
+                      <ul className="text-sm text-gray-700 space-y-1">
+                        {includedItems.slice(0, 3).map((item, idx) => (
+                          <li key={idx} className="line-clamp-1">- {item}</li>
+                        ))}
+                        {includedItems.length > 3 && (
+                          <li className="text-xs text-gray-500">+{includedItems.length - 3} more</li>
+                        )}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-gray-500">No items listed</p>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 pt-4 border-t border-gray-100">
+                    <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${s.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                      {s.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button type="button" size="sm" variant="outline" onClick={() => startEdit(s)}>
+                        Edit
+                      </Button>
+                      <ConfirmAction
+                        triggerLabel="Delete"
+                        title="Delete service?"
+                        description="This action cannot be undone."
+                        onConfirm={() => act(() => adminApi.deleteService(token as string, s.id), 'Service deleted.')}
+                        variant="destructive"
+                        disabled={busy}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
-      {!services.isLoading && !services.data?.length && (
+      {!services.isLoading && !sortedServices.length && (
         <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
           <p className="text-gray-500">No services yet. Create one to get started.</p>
         </div>
@@ -160,8 +224,8 @@ export default function AdminServicesPage() {
             <input value={form.shortDescription} onChange={(e) => setForm({ ...form, shortDescription: e.target.value })} placeholder="Brief overview for listings" className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Full Description</label>
-            <textarea value={form.fullDescription} onChange={(e) => setForm({ ...form, fullDescription: e.target.value })} placeholder="Detailed information about this service" className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm h-28 focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50 resize-none" />
+            <label className="block text-sm font-medium text-gray-700 mb-2">What's Included</label>
+            <textarea value={form.includedItemsText} onChange={(e) => setForm({ ...form, includedItemsText: e.target.value })} placeholder={"One item per line\nWedding shoots\nFamily portraits\nEdited delivery"} className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm h-32 focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50 resize-none" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -174,7 +238,29 @@ export default function AdminServicesPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Service Image</label>
-            <input type="file" onChange={(e) => setImage(e.target.files?.[0] || null)} className="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-[#045be2] hover:file:bg-blue-100 cursor-pointer" />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files?.[0] || null)}
+              className="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-[#045be2] hover:file:bg-blue-100 cursor-pointer"
+            />
+            {imagePreviewUrl ? (
+              <div className="mt-3">
+                <p className="text-xs text-gray-500 mb-2">
+                  {image ? 'Selected image preview' : 'Current image'}
+                </p>
+                <div className="relative h-36 w-full rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
+                  <Image
+                    src={imagePreviewUrl}
+                    alt="Service preview"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            ) : (
+              <p className="mt-2 text-xs text-gray-500">No image selected.</p>
+            )}
           </div>
           </div>
           <DialogFooter>

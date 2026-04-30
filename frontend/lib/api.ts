@@ -27,6 +27,7 @@ export interface ServiceItem {
   serviceName: string;
   shortDescription?: string | null;
   fullDescription?: string | null;
+  includedItems?: string[];
   imageUrl?: string | null;
   displayOrder?: number;
   isActive: boolean;
@@ -40,6 +41,12 @@ export interface GalleryItem {
   thumbnailUrl?: string | null;
   mediaType?: string;
   categoryId?: string | null;
+  categoryName?: string | null;
+  category?: {
+    id: string;
+    name: string;
+    slug?: string | null;
+  } | null;
   location?: string | null;
   clientName?: string | null;
   isFeatured?: boolean;
@@ -74,6 +81,21 @@ export interface ProjectItem {
   projectDate?: string | null;
   description?: string | null;
   isFeatured?: boolean;
+}
+
+export interface HeroCarouselItem {
+  imageUrl: string;
+  title: string;
+  subtitle: string;
+}
+
+export interface HeroSectionPayload {
+  id: string;
+  headlineLine1: string;
+  headlineLine2: string;
+  introText: string;
+  mosaicImages: [string, string, string];
+  carouselItems: HeroCarouselItem[];
 }
 
 export interface GalleryCategoryItem {
@@ -153,13 +175,22 @@ apiClient.interceptors.response.use(
 );
 
 const authHeader = (token: string) => ({ headers: { Authorization: `Bearer ${token}` } });
+const multipartAuthHeader = (token: string) => ({
+  headers: {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'multipart/form-data'
+  }
+});
 
 export const publicApi = {
   listServices: async () => (await apiClient.get<BackendResponse<PaginatedResult<ServiceItem>>>('/services')).data.data.items,
   listGallery: async () => (await apiClient.get<BackendResponse<PaginatedResult<GalleryItem>>>('/gallery')).data.data.items,
+  listFeaturedGallery: async () =>
+    (await apiClient.get<BackendResponse<PaginatedResult<GalleryItem>>>('/gallery?featured=true')).data.data.items,
   listVideos: async () => (await apiClient.get<BackendResponse<PaginatedResult<VideoItem>>>('/videos')).data.data.items,
   listPackages: async () => (await apiClient.get<BackendResponse<PaginatedResult<PackageItem>>>('/packages')).data.data.items,
   listProjects: async () => (await apiClient.get<BackendResponse<PaginatedResult<ProjectItem>>>('/projects')).data.data.items,
+  getHeroSection: async () => (await apiClient.get<BackendResponse<HeroSectionPayload>>('/hero')).data.data,
   listGalleryCategories: async () => (await apiClient.get<BackendResponse<GalleryCategoryItem[]>>('/gallery-categories')).data.data,
   createBooking: async (payload: BookingPayload) => (await apiClient.post<BackendResponse<any>>('/bookings', payload)).data,
   createContactMessage: async (payload: ContactPayload) => (await apiClient.post<BackendResponse<any>>('/contact', payload)).data,
@@ -187,12 +218,12 @@ export const adminApi = {
   uploadGalleryFiles: async (token: string, files: File[]) => {
     const formData = new FormData();
     files.forEach((file) => formData.append('files', file));
-    return (await apiClient.post<BackendResponse<any>>('/admin/gallery/upload', formData, { headers: { Authorization: `Bearer ${token}` } })).data;
+    return (await apiClient.post<BackendResponse<any>>('/admin/gallery/upload', formData, multipartAuthHeader(token))).data;
   },
   createGalleryItem: async (token: string, formData: FormData) =>
-    (await apiClient.post<BackendResponse<any>>('/admin/gallery', formData, { headers: { Authorization: `Bearer ${token}` } })).data,
+    (await apiClient.post<BackendResponse<any>>('/admin/gallery', formData, multipartAuthHeader(token))).data,
   updateGalleryItem: async (token: string, id: string, formData: FormData) =>
-    (await apiClient.put<BackendResponse<any>>(`/admin/gallery/${id}`, formData, { headers: { Authorization: `Bearer ${token}` } })).data,
+    (await apiClient.put<BackendResponse<any>>(`/admin/gallery/${id}`, formData, multipartAuthHeader(token))).data,
   deleteGalleryItem: async (token: string, id: string) =>
     (await apiClient.delete<BackendResponse<any>>(`/admin/gallery/${id}`, authHeader(token))).data,
   createGalleryCategory: async (token: string, payload: Record<string, unknown>) =>
@@ -203,9 +234,9 @@ export const adminApi = {
     (await apiClient.delete<BackendResponse<any>>(`/admin/gallery/categories/${id}`, authHeader(token))).data,
 
   createVideo: async (token: string, formData: FormData) =>
-    (await apiClient.post<BackendResponse<any>>('/admin/videos', formData, { headers: { Authorization: `Bearer ${token}` } })).data,
+    (await apiClient.post<BackendResponse<any>>('/admin/videos', formData, multipartAuthHeader(token))).data,
   updateVideo: async (token: string, id: string, formData: FormData) =>
-    (await apiClient.put<BackendResponse<any>>(`/admin/videos/${id}`, formData, { headers: { Authorization: `Bearer ${token}` } })).data,
+    (await apiClient.put<BackendResponse<any>>(`/admin/videos/${id}`, formData, multipartAuthHeader(token))).data,
   deleteVideo: async (token: string, id: string) =>
     (await apiClient.delete<BackendResponse<any>>(`/admin/videos/${id}`, authHeader(token))).data,
 
@@ -226,11 +257,15 @@ export const adminApi = {
   listServices: async (token: string) =>
     (await apiClient.get<BackendResponse<PaginatedResult<ServiceItem>>>('/admin/services?page=1&limit=20', authHeader(token))).data.data.items,
   createService: async (token: string, formData: FormData) =>
-    (await apiClient.post<BackendResponse<any>>('/admin/services', formData, { headers: { Authorization: `Bearer ${token}` } })).data,
+    (await apiClient.post<BackendResponse<any>>('/admin/services', formData, multipartAuthHeader(token))).data,
   updateService: async (token: string, id: string, formData: FormData) =>
-    (await apiClient.put<BackendResponse<any>>(`/admin/services/${id}`, formData, { headers: { Authorization: `Bearer ${token}` } })).data,
+    (await apiClient.put<BackendResponse<any>>(`/admin/services/${id}`, formData, multipartAuthHeader(token))).data,
   deleteService: async (token: string, id: string) =>
     (await apiClient.delete<BackendResponse<any>>(`/admin/services/${id}`, authHeader(token))).data,
+  getHeroSection: async (token: string) =>
+    (await apiClient.get<BackendResponse<HeroSectionPayload>>('/admin/hero', authHeader(token))).data.data,
+  updateHeroSection: async (token: string, formData: FormData) =>
+    (await apiClient.put<BackendResponse<HeroSectionPayload>>('/admin/hero', formData, multipartAuthHeader(token))).data.data,
 
   createPackage: async (token: string, payload: Record<string, unknown>) =>
     (await apiClient.post<BackendResponse<any>>('/admin/packages', payload, authHeader(token))).data,
@@ -246,7 +281,8 @@ export const adminApi = {
   deleteProject: async (token: string, id: string) =>
     (await apiClient.delete<BackendResponse<any>>(`/admin/projects/${id}`, authHeader(token))).data,
 
-  listGallery: async (_token: string) => publicApi.listGallery(),
+  listGallery: async (token: string) =>
+    (await apiClient.get<BackendResponse<PaginatedResult<GalleryItem>>>('/admin/gallery?page=1&limit=100', authHeader(token))).data.data.items,
   listVideos: async (_token: string) => publicApi.listVideos(),
   listPackages: async (_token: string) => publicApi.listPackages(),
   listProjects: async (_token: string) => publicApi.listProjects(),

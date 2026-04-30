@@ -14,9 +14,11 @@ import {
   ChevronRight,
   ChevronLeft,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { usePublicFeaturedGallery, usePublicHeroSection, usePublicServices } from '@/lib/hooks';
+import { mediaUrl } from '@/lib/api';
 
-const featuredWorks = [
+const defaultFeaturedWorks = [
   { id: 1, image: '/images/service-photography.jpg', title: 'Wedding Photography', category: 'Photography' },
   { id: 2, image: '/images/service-videography.jpg', title: 'Corporate Video', category: 'Videography' },
   { id: 3, image: '/images/service-editing.jpg', title: 'Brand Campaign', category: 'Editing' },
@@ -27,14 +29,68 @@ const featuredWorks = [
 
 export default function HomePage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const slide = featuredWorks[currentImageIndex];
+  const { data: services = [], isLoading: servicesLoading } = usePublicServices();
+  const { data: featuredGallery = [] } = usePublicFeaturedGallery();
+  const { data: heroSection } = usePublicHeroSection();
+
+  const galleryFeaturedWorks = featuredGallery
+    .slice(0, 6)
+    .map((item, idx) => ({
+      id: item.id || `featured-${idx}`,
+      image:
+        mediaUrl(item.thumbnailUrl || item.fileUrl) ||
+        defaultFeaturedWorks[idx % defaultFeaturedWorks.length].image,
+      title: item.title || defaultFeaturedWorks[idx % defaultFeaturedWorks.length].title,
+      category:
+        item.categoryName ||
+        item.category?.name ||
+        defaultFeaturedWorks[idx % defaultFeaturedWorks.length].category
+    }));
+
+  const featuredWorksGrid =
+    galleryFeaturedWorks.length > 0 ? galleryFeaturedWorks : [...defaultFeaturedWorks];
+
+  const heroItems = heroSection?.carouselItems ?? [];
+  const heroCarouselWorks = heroItems.length
+    ? heroItems.map((item, idx) => ({
+        id: `hero-slide-${idx}`,
+        image: mediaUrl(item.imageUrl) || defaultFeaturedWorks[idx % defaultFeaturedWorks.length].image,
+        title: item.title || defaultFeaturedWorks[idx % defaultFeaturedWorks.length].title,
+        category: item.subtitle || defaultFeaturedWorks[idx % defaultFeaturedWorks.length].category
+      }))
+    : [...defaultFeaturedWorks];
+
+  const slide = heroCarouselWorks[currentImageIndex];
+  const headlineLine1 = heroSection?.headlineLine1 ?? 'We Shoot Your World.';
+  const headlineLine2 = heroSection?.headlineLine2 ?? 'We Tell Your Story.';
+  const introText =
+    heroSection?.introText ??
+    'FloyMedia is a creative media production company providing professional photography, videography, event coverage, corporate shoots, sports media, family photography, product content, and visual storytelling for individuals, brands, businesses, and communities.';
+  const mosaicImages =
+    heroSection?.mosaicImages?.length === 3
+      ? heroSection.mosaicImages.map((u) => mediaUrl(u) || u)
+      : ['/images/service-photography.jpg', '/images/service-videography.jpg', '/images/service-editing.jpg'];
+  const serviceIcons = [Camera, Film, Scissors, Drone];
+  const defaultServiceImages = [
+    '/images/service-photography.jpg',
+    '/images/service-videography.jpg',
+    '/images/service-editing.jpg',
+    '/images/service-drone.jpg',
+  ];
+  const featuredServices = services.slice(0, 4);
+
+  useEffect(() => {
+    if (currentImageIndex >= heroCarouselWorks.length) {
+      setCurrentImageIndex(0);
+    }
+  }, [currentImageIndex, heroCarouselWorks.length]);
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % featuredWorks.length);
+    setCurrentImageIndex((prev) => (prev + 1) % heroCarouselWorks.length);
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + featuredWorks.length) % featuredWorks.length);
+    setCurrentImageIndex((prev) => (prev - 1 + heroCarouselWorks.length) % heroCarouselWorks.length);
   };
 
   return (
@@ -47,15 +103,11 @@ export default function HomePage() {
             <div className="w-full lg:w-1/2 flex flex-col justify-between lg:pr-10 xl:pr-12">
               <div className="text-center lg:text-left">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.08] tracking-tight mb-5">
-                  We Shoot Your World.
-                  <span className="block text-[#045be2]">
-                    We Tell Your Story.
-                  </span>
+                  {headlineLine1}
+                  <span className="block text-[#045be2]">{headlineLine2}</span>
                 </h1>
                 <p className="text-sm md:text-base text-gray-600 max-w-lg mx-auto lg:mx-0 leading-relaxed mb-8">
-                  FloyMedia is a creative media production company providing professional photography, videography,
-                  event coverage, corporate shoots, sports media, family photography, product content, and visual
-                  storytelling for individuals, brands, businesses, and communities.
+                  {introText}
                 </p>
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center lg:justify-start">
                   <Link
@@ -77,7 +129,7 @@ export default function HomePage() {
                 <div className="col-span-1 row-span-2">
                   <div className="relative w-full h-full min-h-52 md:min-h-72 rounded-3xl overflow-hidden bg-gray-100">
                     <Image
-                      src="/images/service-photography.jpg"
+                      src={mosaicImages[0]}
                       alt="Featured work"
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-500"
@@ -87,7 +139,7 @@ export default function HomePage() {
                 </div>
                 <div className="relative w-full h-36 md:h-44 rounded-3xl overflow-hidden bg-gray-100">
                   <Image
-                    src="/images/service-videography.jpg"
+                    src={mosaicImages[1]}
                     alt="Featured work"
                     fill
                     className="object-cover hover:scale-105 transition-transform duration-500"
@@ -96,7 +148,7 @@ export default function HomePage() {
                 </div>
                 <div className="relative w-full h-36 md:h-44 rounded-3xl overflow-hidden bg-gray-100">
                   <Image
-                    src="/images/service-editing.jpg"
+                    src={mosaicImages[2]}
                     alt="Featured work"
                     fill
                     className="object-cover hover:scale-105 transition-transform duration-500"
@@ -139,7 +191,7 @@ export default function HomePage() {
                   </div>
 
                   <div className="grid shrink-0 grid-cols-3 gap-3">
-                    {featuredWorks.map((work, idx) => (
+                    {heroCarouselWorks.map((work, idx) => (
                       <button
                         key={work.id}
                         type="button"
@@ -191,73 +243,35 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Link href="/services" className="group">
-              <div className="relative h-80 rounded-2xl overflow-hidden mb-6 bg-gray-100">
-                <Image
-                  src="/images/service-photography.jpg"
-                  alt="Professional Photography"
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-0 left-0 p-6">
-                  <Camera className="text-white mb-3" size={28} />
-                  <h3 className="text-xl font-bold text-white">Photography</h3>
-                </div>
-              </div>
-              <p className="text-gray-600 text-sm mb-3">Studio and on-location photography for all occasions</p>
-            </Link>
-
-            <Link href="/services" className="group">
-              <div className="relative h-80 rounded-2xl overflow-hidden mb-6 bg-gray-100">
-                <Image
-                  src="/images/service-videography.jpg"
-                  alt="Professional Videography"
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-0 left-0 p-6">
-                  <Film className="text-white mb-3" size={28} />
-                  <h3 className="text-xl font-bold text-white">Videography</h3>
-                </div>
-              </div>
-              <p className="text-gray-600 text-sm mb-3">Cinematic video production with professional equipment</p>
-            </Link>
-
-            <Link href="/services" className="group">
-              <div className="relative h-80 rounded-2xl overflow-hidden mb-6 bg-gray-100">
-                <Image
-                  src="/images/service-editing.jpg"
-                  alt="Video Editing"
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-0 left-0 p-6">
-                  <Scissors className="text-white mb-3" size={28} />
-                  <h3 className="text-xl font-bold text-white">Editing & Effects</h3>
-                </div>
-              </div>
-              <p className="text-gray-600 text-sm mb-3">Professional post-production with creative effects</p>
-            </Link>
-
-            <Link href="/services" className="group">
-              <div className="relative h-80 rounded-2xl overflow-hidden mb-6 bg-gray-100">
-                <Image
-                  src="/images/service-drone.jpg"
-                  alt="Drone Services"
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-0 left-0 p-6">
-                  <Drone className="text-white mb-3" size={28} />
-                  <h3 className="text-xl font-bold text-white">Drone Services</h3>
-                </div>
-              </div>
-              <p className="text-gray-600 text-sm mb-3">Aerial photography and videography expertise</p>
-            </Link>
+            {servicesLoading && (
+              <div className="col-span-full text-center text-sm text-gray-500">Loading services...</div>
+            )}
+            {!servicesLoading && featuredServices.map((service, idx) => {
+              const Icon = serviceIcons[idx % serviceIcons.length];
+              return (
+                <Link key={service.id} href="/services" className="group">
+                  <div className="relative h-80 rounded-2xl overflow-hidden mb-6 bg-gray-100">
+                    <Image
+                      src={mediaUrl(service.imageUrl) || defaultServiceImages[idx % defaultServiceImages.length]}
+                      alt={service.serviceName}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute bottom-0 left-0 p-6">
+                      <Icon className="text-white mb-3" size={28} />
+                      <h3 className="text-xl font-bold text-white">{service.serviceName}</h3>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 text-sm mb-3">
+                    {service.shortDescription || 'Professional creative media service.'}
+                  </p>
+                </Link>
+              );
+            })}
+            {!servicesLoading && featuredServices.length === 0 && (
+              <div className="col-span-full text-center text-sm text-gray-500">No services published yet.</div>
+            )}
           </div>
 
           <div className="text-center mt-12">
@@ -329,7 +343,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {featuredWorks.map((work) => (
+            {featuredWorksGrid.map((work) => (
               <Link key={work.id} href="/gallery" className="group">
                 <div className="relative h-72 rounded-2xl overflow-hidden mb-4 bg-gray-100">
                   <Image

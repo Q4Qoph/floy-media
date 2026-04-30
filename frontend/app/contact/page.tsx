@@ -198,7 +198,7 @@ export default function ContactPage() {
               </div>
 
               {/* Quick Links */}
-              <div className="mt-12 pt-8 border-t-2 border-gray-200">
+              {/* <div className="mt-12 pt-8 border-t-2 border-gray-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-6">Quick Links</h3>
                 <div className="space-y-3">
                   <a href="/bookings" className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold">
@@ -214,17 +214,8 @@ export default function ContactPage() {
                     Our Services
                   </a>
                 </div>
-              </div>
+              </div> */}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Map Section (placeholder) */}
-      <section className="py-12 bg-gray-100">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="h-96 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-2xl flex items-center justify-center">
-            <p className="text-white text-xl font-semibold">Map Integration - Studio Location</p>
           </div>
         </div>
       </section>

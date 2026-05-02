@@ -149,12 +149,15 @@ export interface AdminLoginPayload {
   password: string;
 }
 
+export type AdminRoleDto = 'SUPER_ADMIN' | 'ADMIN' | 'EDITOR' | 'VIEWER';
+
 export interface AdminAuthData {
   token: string;
   admin: {
     id: string;
     email: string;
-    fullName?: string;
+    fullName?: string | null;
+    role: AdminRoleDto;
   };
 }
 
@@ -162,6 +165,21 @@ export interface AdminRegisterPayload {
   email: string;
   password: string;
   fullName?: string;
+  role?: AdminRoleDto;
+}
+
+export interface AdminUserRow {
+  id: string;
+  email: string;
+  fullName?: string | null;
+  role: AdminRoleDto;
+  createdAt: string;
+}
+
+export interface AdminInvitePayload {
+  email: string;
+  fullName?: string;
+  role: AdminRoleDto;
 }
 
 const apiClient = axios.create({
@@ -200,10 +218,22 @@ export const publicApi = {
 
 export const adminApi = {
   login: async (payload: AdminLoginPayload) => (await apiClient.post<BackendResponse<AdminAuthData>>('/admin/login', payload)).data.data,
+  forgotPassword: async (email: string) =>
+    (await apiClient.post<BackendResponse<unknown>>('/admin/forgot-password', { email })).data,
+  resetPassword: async (payload: { token: string; password: string }) =>
+    (await apiClient.post<BackendResponse<unknown>>('/admin/reset-password', payload)).data,
   register: async (token: string, payload: AdminRegisterPayload) =>
     (await apiClient.post<BackendResponse<any>>('/admin/register', payload, authHeader(token))).data,
   profile: async (token: string) =>
-    (await apiClient.get<BackendResponse<{ id: string; email: string; fullName?: string }>>('/admin/profile', authHeader(token))).data.data,
+    (await apiClient.get<BackendResponse<{ id: string; email: string; fullName?: string | null; role: AdminRoleDto }>>('/admin/profile', authHeader(token))).data.data,
+  listAdminUsers: async (token: string) =>
+    (await apiClient.get<BackendResponse<AdminUserRow[]>>('/admin/users', authHeader(token))).data.data,
+  inviteAdminUser: async (token: string, payload: AdminInvitePayload) =>
+    (await apiClient.post<BackendResponse<AdminUserRow>>('/admin/users', payload, authHeader(token))).data.data,
+  updateAdminUser: async (token: string, id: string, payload: { fullName?: string | null; role?: AdminRoleDto }) =>
+    (await apiClient.patch<BackendResponse<AdminUserRow>>(`/admin/users/${id}`, payload, authHeader(token))).data.data,
+  deleteAdminUser: async (token: string, id: string) =>
+    (await apiClient.delete<BackendResponse<unknown>>(`/admin/users/${id}`, authHeader(token))).data,
   overview: async (token: string) => (await apiClient.get<BackendResponse<Record<string, number>>>('/admin/overview', authHeader(token))).data.data,
 
   listBookings: async (token: string) =>

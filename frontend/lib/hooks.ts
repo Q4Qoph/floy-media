@@ -1,7 +1,16 @@
 'use client';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { adminApi, publicApi, type AdminLoginPayload, type BookingPayload, type ContactPayload, type TeamApplicationPayload } from './api';
+import {
+  adminApi,
+  publicApi,
+  type AdminInvitePayload,
+  type AdminLoginPayload,
+  type AdminRoleDto,
+  type BookingPayload,
+  type ContactPayload,
+  type TeamApplicationPayload,
+} from './api';
 
 export const usePublicServices = () =>
   useQuery({
@@ -57,6 +66,39 @@ export const useCreateTeamApplication = () =>
 export const useAdminLogin = () =>
   useMutation({
     mutationFn: (payload: AdminLoginPayload) => adminApi.login(payload),
+  });
+
+export const useAdminForgotPassword = () =>
+  useMutation({
+    mutationFn: (email: string) => adminApi.forgotPassword(email),
+  });
+
+export const useAdminResetPassword = () =>
+  useMutation({
+    mutationFn: (payload: { token: string; password: string }) => adminApi.resetPassword(payload),
+  });
+
+export const useAdminUsers = (token: string | null) =>
+  useQuery({
+    queryKey: ['admin-users', token],
+    queryFn: () => adminApi.listAdminUsers(token as string),
+    enabled: Boolean(token),
+  });
+
+export const useAdminInviteUser = (token: string | null) =>
+  useMutation({
+    mutationFn: (payload: AdminInvitePayload) => adminApi.inviteAdminUser(token as string, payload),
+  });
+
+export const useAdminUpdateUser = (token: string | null) =>
+  useMutation({
+    mutationFn: (args: { id: string; payload: { fullName?: string | null; role?: AdminRoleDto } }) =>
+      adminApi.updateAdminUser(token as string, args.id, args.payload),
+  });
+
+export const useAdminDeleteUser = (token: string | null) =>
+  useMutation({
+    mutationFn: (id: string) => adminApi.deleteAdminUser(token as string, id),
   });
 
 export const useAdminOverview = (token: string | null) =>

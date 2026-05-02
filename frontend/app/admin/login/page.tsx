@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAdminLogin } from '@/lib/hooks';
@@ -14,7 +15,7 @@ export default function AdminLoginPage() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const result = await loginMutation.mutateAsync({ email, password });
-    adminAuth.setToken(result.token);
+    adminAuth.setSession(result.token, result.admin.role);
     router.push('/admin/dashboard');
   };
 
@@ -41,7 +42,12 @@ export default function AdminLoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-gray-700">Password</label>
+                <Link href="/admin/forgot-password" className="text-xs font-medium text-[#045be2] hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
               <input
                 type="password"
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none transition bg-gray-50"

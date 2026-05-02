@@ -2,11 +2,28 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { adminAuth } from '@/lib/admin-auth';
-import { LayoutGrid, FileText, ImageIcon, Video, Wrench, Mail, Users, Package, FolderOpen, LogOut, Search, Bell, Images } from 'lucide-react';
+import { adminAuth, canManageAdminUsers } from '@/lib/admin-auth';
+import { adminApi } from '@/lib/api';
+import {
+  LayoutGrid,
+  FileText,
+  ImageIcon,
+  Video,
+  Wrench,
+  Mail,
+  Users,
+  Package,
+  FolderOpen,
+  LogOut,
+  Search,
+  Bell,
+  Images,
+  UserCog,
+} from 'lucide-react';
 
-const links = [
+const baseLinks = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutGrid },
   { href: '/admin/bookings', label: 'Bookings', icon: FileText },
   { href: '/admin/gallery', label: 'Gallery', icon: ImageIcon },
@@ -19,9 +36,31 @@ const links = [
   { href: '/admin/projects', label: 'Projects', icon: FolderOpen },
 ];
 
+const usersLink = { href: '/admin/users', label: 'Users & roles', icon: UserCog };
+
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [role, setRole] = useState<ReturnType<typeof adminAuth.getRole>>(null);
+  useEffect(() => {
+    const token = adminAuth.getToken();
+    if (!token) {
+      setRole(null);
+      return;
+    }
+    if (!adminAuth.getRole()) {
+      adminApi
+        .profile(token)
+        .then((p) => {
+          adminAuth.setSession(token, p.role);
+          setRole(p.role);
+        })
+        .catch(() => setRole(adminAuth.getRole()));
+    } else {
+      setRole(adminAuth.getRole());
+    }
+  }, []);
+  const links = canManageAdminUsers(role) ? [...baseLinks, usersLink] : baseLinks;
 
   return (
     <div className="min-h-screen bg-gray-50">

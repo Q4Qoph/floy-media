@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Camera } from 'lucide-react';
 import type { Service } from '@/types';
 
 interface ServiceCardProps {
@@ -14,12 +14,19 @@ export default function ServiceCard({ service }: ServiceCardProps) {
     <div className="group flex flex-col h-full overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:shadow-lg hover:border-primary/50">
       {/* Image Container */}
       <div className="relative h-48 w-full overflow-hidden bg-muted">
-        <Image
-          src={service.image}
-          alt={service.title}
-          fill
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
-        />
+        {service.image ? (
+          <Image
+            src={service.image}
+            alt={service.title}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, 320px"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-muted">
+            <Camera className="text-muted-foreground/50" size={40} strokeWidth={1.25} />
+          </div>
+        )}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
       </div>
 

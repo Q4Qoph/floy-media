@@ -57,7 +57,7 @@ export interface Service {
   id: string;
   title: string;
   description: string;
-  image: string;
+  image?: string;
   icon?: string;
   price?: string;
   features?: string[];

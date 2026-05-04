@@ -33,7 +33,7 @@ const baseLinks = [
   { href: '/admin/messages', label: 'Messages', icon: Mail },
   { href: '/admin/team-applications', label: 'Team Applications', icon: Users },
   { href: '/admin/packages', label: 'Packages', icon: Package },
-  { href: '/admin/projects', label: 'Projects', icon: FolderOpen },
+  // { href: '/admin/projects', label: 'Projects', icon: FolderOpen },
 ];
 
 const usersLink = { href: '/admin/users', label: 'Users & roles', icon: UserCog };

@@ -11,9 +11,10 @@ export default function PackagesPage() {
   const displayedPackages = apiPackages.map((pkg, idx) => ({
     id: pkg.id,
     name: pkg.packageName,
-    price: 'Custom',
+    price: pkg.price,
     description: pkg.description?.trim() || '',
-    features: [pkg.category, pkg.isActive ? 'Active offering' : 'Currently inactive'].filter(Boolean) as string[],
+    features: (pkg.whatsIncluded || []).filter(Boolean),
+    category: pkg.category || '',
     highlighted: idx % 3 === 1,
   }));
 
@@ -56,11 +57,16 @@ export default function PackagesPage() {
                       {pkg.description}
                     </p>
                   ) : null}
+                  {pkg.category ? (
+                    <p className={`text-xs mb-3 uppercase tracking-wide ${pkg.highlighted ? 'text-white/80' : 'text-gray-500'}`}>
+                      {pkg.category}
+                    </p>
+                  ) : null}
                   <div className={`text-4xl font-bold mb-8 ${pkg.highlighted ? 'text-white' : 'text-gray-900'}`}>
-                    {pkg.price}
+                    KES {Number(pkg.price || 0).toLocaleString()}
                   </div>
-                  <ul className="space-y-3 mb-8">
-                    {pkg.features.map((feature, fidx) => (
+                  <ul className="space-y-3 mb-8 min-h-20">
+                    {(pkg.features.length > 0 ? pkg.features : ['Package details available on request']).map((feature, fidx) => (
                       <li key={fidx} className="flex items-center gap-2">
                         <CheckCircle
                           className={`flex-shrink-0 ${pkg.highlighted ? 'text-white' : 'text-blue-600'}`}

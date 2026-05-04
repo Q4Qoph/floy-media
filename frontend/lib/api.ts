@@ -70,6 +70,8 @@ export interface PackageItem {
   packageName: string;
   description?: string | null;
   category?: string | null;
+  price: number;
+  whatsIncluded: string[];
   displayOrder?: number;
   isActive: boolean;
 }
@@ -314,7 +316,8 @@ export const adminApi = {
   listGallery: async (token: string) =>
     (await apiClient.get<BackendResponse<PaginatedResult<GalleryItem>>>('/admin/gallery?page=1&limit=100', authHeader(token))).data.data.items,
   listVideos: async (_token: string) => publicApi.listVideos(),
-  listPackages: async (_token: string) => publicApi.listPackages(),
+  listPackages: async (token: string) =>
+    (await apiClient.get<BackendResponse<PaginatedResult<PackageItem>>>('/admin/packages?page=1&limit=100', authHeader(token))).data.data.items,
   listProjects: async (_token: string) => publicApi.listProjects(),
   listGalleryCategories: async (_token: string) => publicApi.listGalleryCategories(),
 };

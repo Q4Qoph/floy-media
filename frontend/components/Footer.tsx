@@ -8,6 +8,20 @@ import { usePathname } from 'next/navigation';
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const pathname = usePathname();
+  const mainLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/services', label: 'Services' },
+    { href: '/gallery', label: 'Gallery' },
+    { href: '/videos', label: 'Videos' },
+    { href: '/packages', label: 'Packages' }
+  ];
+  const quickLinks = [
+    { href: '/bookings', label: 'Bookings' },
+    { href: '/join-team', label: 'Join Team' },
+    { href: '/contact', label: 'Contact' },
+    { href: '/admin/login', label: 'Staff / Admin Login' }
+  ];
 
   if (pathname.startsWith('/admin')) return null;
 
@@ -26,52 +40,31 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Services */}
+          {/* Explore */}
           <div>
-            <h4 className="font-medium text-xs text-black mb-6 tracking-widest">SERVICES</h4>
+            <h4 className="font-medium text-xs text-black mb-6 tracking-widest">EXPLORE</h4>
             <ul className="space-y-3 text-xs md:text-sm text-black/60">
-              <li>
-                <Link href="/#services" className="hover:text-black transition-colors">
-                  Photography
-                </Link>
-              </li>
-              <li>
-                <Link href="/#services" className="hover:text-black transition-colors">
-                  Videography
-                </Link>
-              </li>
-              <li>
-                <Link href="/#services" className="hover:text-black transition-colors">
-                  Wedding & Event Coverage
-                </Link>
-              </li>
-              <li>
-                <Link href="/#services" className="hover:text-black transition-colors">
-                  Corporate & Sports Media
-                </Link>
-              </li>
+              {mainLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="hover:text-black transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Company */}
+          {/* Quick Links */}
           <div>
-            <h4 className="font-medium text-xs text-black mb-6 tracking-widest">COMPANY</h4>
+            <h4 className="font-medium text-xs text-black mb-6 tracking-widest">QUICK LINKS</h4>
             <ul className="space-y-3 text-xs md:text-sm text-black/60">
-              <li>
-                <Link href="/about" className="hover:text-black transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="hover:text-black transition-colors">
-                  Portfolio
-                </Link>
-              </li>
-              <li>
-                <Link href="/booking" className="hover:text-black transition-colors">
-                  Contact
-                </Link>
-              </li>
+              {quickLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="hover:text-black transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

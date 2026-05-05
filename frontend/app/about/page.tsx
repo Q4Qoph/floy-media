@@ -2,10 +2,53 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ImageIcon } from 'lucide-react';
+import { ArrowRight, CheckCircle, Focus, Layers, Sparkles, Target } from 'lucide-react';
 import PageHero from '@/components/PageHero';
 import { usePublicGallery } from '@/lib/hooks';
 import { mediaUrl } from '@/lib/api';
+
+const CORE_VALUES = [
+  'Creativity',
+  'Professionalism',
+  'Reliability',
+  'Storytelling',
+  'Quality',
+  'Client-centered service',
+  'Community impact',
+  'Innovation',
+];
+
+const WHO_WE_SERVE = [
+  'Private individuals',
+  'Couples',
+  'Families',
+  'Companies',
+  'Small businesses',
+  'Schools',
+  'Churches',
+  'NGOs',
+  'Sports teams',
+  'Event organizers',
+  'Product-based businesses',
+  'Influencers',
+  'Community groups',
+  'Real estate businesses',
+];
+
+const WHAT_WE_DO = [
+  'Photography',
+  'Videography',
+  'Wedding and event coverage',
+  'Corporate shoots',
+  'Product photography',
+  'Sports media',
+  'Family and lifestyle photography',
+  'Brand storytelling',
+  'Social media content creation',
+  'NGO and community impact documentation',
+  'Digital gallery delivery',
+  'Client media archive management',
+];
 
 function resolveMediaUrl(raw?: string | null): string | null {
   if (!raw?.trim()) return null;
@@ -20,209 +63,205 @@ export default function AboutPage() {
     .map((item) => {
       const src = resolveMediaUrl(item.thumbnailUrl || item.fileUrl);
       if (!src) return null;
-      return { id: item.id, src, title: item.title, category: item.categoryName || item.category?.name || '' };
+      return { id: item.id, src, title: item.title };
     })
     .filter((x): x is NonNullable<typeof x> => x !== null);
 
-  const storyImage = withImages[0] ?? null;
-  const secondaryImage = withImages[1] ?? null;
-  const portfolioSlice = withImages.slice(0, 6);
+  const heroImage = withImages[0] ?? null;
+  const showcaseImages = withImages.slice(1, 5);
 
   return (
     <div className="w-full">
       <PageHero
+        eyebrow="About us"
         title="About FloyMedia"
-        description="We Shoot Your World. We Tell Your Story."
-        eyebrow="Our Identity"
-        variant="indigo"
+        description="FloyMedia is a creative media company built on photography, videography, storytelling, and digital content. We help individuals, families, organizations, and brands capture moments and share their stories with clarity and impact."
       />
 
-      <section className="py-20 md:py-32 bg-white">
+      {/* Intro + image — image height scales with width (3:2), aligns with story block */}
+      <section className="py-16 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
-            <div className="relative h-96 rounded-2xl overflow-hidden bg-gray-100">
-              {isLoading ? (
-                <div className="absolute inset-0 animate-pulse bg-gray-200" />
-              ) : storyImage ? (
-                <Image src={storyImage.src} alt={storyImage.title} fill className="object-cover" sizes="50vw" />
-              ) : (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 gap-2">
-                  <ImageIcon size={40} strokeWidth={1.25} />
-                  <span className="text-sm">Add gallery images to show visuals here</span>
-                </div>
-              )}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-start">
+            <div className="space-y-5">
+              <p className="text-xs font-semibold tracking-widest text-[#045be2] uppercase">Our story</p>
+              <div className="space-y-5 text-lg text-gray-600 leading-relaxed">
+                <p>
+                  FloyMedia is a creative media production company built around photography, videography, storytelling,
+                  and digital content creation. We help individuals, families, companies, brands, sports teams, NGOs,
+                  schools, churches, and community organizations capture their moments and communicate their stories
+                  professionally.
+                </p>
+                <p>
+                  We believe every person, event, business, and community has a story worth preserving and sharing. Our role
+                  is to turn those stories into high-quality photos, videos, digital galleries, and media content that can be
+                  used for memories, marketing, documentation, branding, and communication.
+                </p>
+              </div>
             </div>
 
-            <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Who We Are</h2>
-              <p className="text-lg text-gray-600 mb-4 leading-relaxed">
-                FloyMedia is a creative media production company built around photography, videography, storytelling,
-                and digital content creation. We help individuals, families, companies, brands, sports teams, NGOs,
-                schools, churches, and community organizations capture their moments and communicate their stories
-                professionally.
-              </p>
-              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                We believe every person, event, business, and community has a story worth preserving and sharing. Our
-                role is to turn those stories into high-quality photos, videos, digital galleries, and media content for
-                memories, marketing, branding, and communication.
-              </p>
+            <div className="w-full lg:justify-self-end">
+              <div className="relative w-full rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-md aspect-[3/2]">
+                {isLoading ? (
+                  <div className="absolute inset-0 animate-pulse bg-gray-200" />
+                ) : heroImage ? (
+                  <>
+                    <Image
+                      src={heroImage.src}
+                      alt={heroImage.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 42vw"
+                      priority
+                    />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent pt-14 pb-4 px-5">
+                      <p className="text-white text-sm font-medium truncate">{heroImage.title}</p>
+                      <Link href="/gallery" className="text-white/90 text-xs font-semibold mt-1 inline-block hover:underline">
+                        View gallery →
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 text-gray-500">
+                    <Layers className="mb-3 text-gray-400" size={36} strokeWidth={1.25} />
+                    <p className="text-sm max-w-xs">Gallery images will appear here when added in admin.</p>
+                    <Link href="/gallery" className="mt-3 text-sm font-semibold text-[#045be2] hover:underline">
+                      Browse gallery
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 md:py-32 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Mission, Vision & Core Values</h2>
+      {/* Mission & Vision — same card language as rest of site */}
+      <section className="py-16 md:py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          <article className="rounded-2xl bg-white border-2 border-gray-200 p-8 md:p-10">
+            <div className="flex items-start gap-4 mb-5">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#045be2]">
+                <Target size={20} />
+              </span>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Mission</h2>
+              </div>
+            </div>
+            <p className="text-gray-600 leading-relaxed">
+              To provide professional photography, videography, and creative media production services that help clients
+              capture moments, tell stories, promote brands, document impact, and communicate visually with confidence.
+            </p>
+          </article>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: 'Mission',
-                description:
-                  'To provide professional photography, videography, and creative media production services that help clients capture moments, tell stories, promote brands, document impact, and communicate visually with confidence.',
-              },
-              {
-                title: 'Vision',
-                description:
-                  'To become a trusted creative media company in East Africa known for high-quality photography, videography, storytelling, and digital media delivery.',
-              },
-              {
-                title: 'Creativity',
-                description: 'Creativity in every frame and every story.',
-              },
-              {
-                title: 'Professionalism',
-                description: 'Reliable, respectful, and high-standard service delivery.',
-              },
-              {
-                title: 'Reliability',
-                description: 'We keep our promises and deliver on schedule.',
-              },
-              {
-                title: 'Storytelling',
-                description: 'Every photo and video should communicate meaning and emotion.',
-              },
-              {
-                title: 'Quality',
-                description: 'We focus on polished, professional output for every client.',
-              },
-              {
-                title: 'Innovation',
-                description: 'We continue improving our craft, tools, and delivery.',
-              },
-            ].map((value, idx) => (
-              <div key={idx} className="bg-white p-8 rounded-2xl">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{value.title}</h3>
-                <p className="text-gray-600">{value.description}</p>
+          <article className="rounded-2xl bg-white border-2 border-gray-200 p-8 md:p-10">
+            <div className="flex items-start gap-4 mb-5">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#045be2]">
+                <Sparkles size={20} />
+              </span>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Vision</h2>
+              </div>
+            </div>
+            <p className="text-gray-600 leading-relaxed">
+              To become a trusted creative media company in East Africa, known for high-quality photography, videography,
+              storytelling, digital gallery delivery, corporate media production, and community impact documentation.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      {/* Core values */}
+      <section className="py-16 md:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6 md:px-8">
+          <div className="max-w-2xl mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Core values</h2>
+            <p className="text-gray-600 text-lg leading-relaxed">
+              The principles that guide how we work with every client and every project.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {CORE_VALUES.map((label) => (
+              <div
+                key={label}
+                className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-center transition-colors hover:border-blue-300"
+              >
+                <Focus className="mx-auto mb-2 text-[#045be2]" size={18} />
+                <p className="font-medium text-gray-900 text-sm leading-snug">{label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 md:py-24 bg-white">
-        <div className="max-w-5xl mx-auto px-6 md:px-8 text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">Final Brand Statement</h2>
-          <p className="text-lg text-gray-600 leading-relaxed">
-            FloyMedia is a modern creative media company built to capture stories, preserve memories, promote brands,
-            document impact, and deliver professional visual content for people, businesses, organizations, and
-            communities.
-          </p>
-          <p className="text-xl font-semibold text-blue-700 mt-6">FloyMedia: We Shoot Your World. We Tell Your Story.</p>
-        </div>
-      </section>
-
-      <section className="py-20 md:py-32 bg-gray-50">
+      {/* What we have — light section like gallery/services */}
+      <section className="py-16 md:py-24 bg-gray-50 border-y border-gray-200">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4 text-center">From the portfolio</h2>
-          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-            A selection of work from your published gallery (managed in admin).
-          </p>
-
-          {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              {[0, 1, 2].map((i) => (
-                <div key={i} className="h-64 rounded-2xl bg-gray-200 animate-pulse" />
-              ))}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">What we have</h2>
+              <p className="text-gray-600 text-lg max-w-2xl leading-relaxed">
+                A glimpse of work from our gallery—projects and visuals we produce for clients.
+              </p>
             </div>
-          ) : portfolioSlice.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-gray-200 bg-white py-16 text-center text-gray-500">
-              No gallery images yet. Publish items in the admin gallery to populate this section.
+            <Link
+              href="/gallery"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[#045be2] hover:text-[#034dc2]"
+            >
+              View full gallery
+              <ArrowRight size={18} />
+            </Link>
+          </div>
+
+          {!isLoading && showcaseImages.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-gray-300 bg-white py-14 text-center text-gray-500">
+              No additional gallery images yet.
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              {portfolioSlice.map((item) => (
-                <Link key={item.id} href="/gallery" className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                  <div className="relative h-56">
-                    <Image src={item.src} alt={item.title} fill className="object-cover" sizes="33vw" />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">{item.title}</h3>
-                    {item.category ? <p className="text-blue-600 font-semibold text-sm">{item.category}</p> : null}
-                  </div>
-                </Link>
-              ))}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {isLoading
+                ? [0, 1, 2, 3].map((idx) => (
+                    <div key={`sk-${idx}`} className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-200 animate-pulse" />
+                  ))
+                : showcaseImages.map((item) => (
+                    <Link
+                      key={item.id}
+                      href="/gallery"
+                      className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-200 border border-gray-200 shadow-sm"
+                    >
+                      <Image
+                        src={item.src}
+                        alt={item.title}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(max-width:768px) 50vw, 25vw"
+                      />
+                    </Link>
+                  ))}
             </div>
           )}
-
-          <p className="text-center text-gray-600 mb-8">
-            Supported by a talented team of photographers, videographers, editors, and production specialists
-          </p>
         </div>
       </section>
 
-      <section className="py-20 md:py-32 bg-white">
+      {/* Who we serve */}
+      <section className="py-16 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">What We Do Well</h2>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div className="relative h-96 rounded-2xl overflow-hidden bg-gray-100">
-              {secondaryImage ? (
-                <Image src={secondaryImage.src} alt={secondaryImage.title} fill className="object-cover" sizes="50vw" />
-              ) : (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 gap-2">
-                  <ImageIcon size={40} strokeWidth={1.25} />
-                  <span className="text-sm px-6 text-center">Second gallery image appears here when available</span>
-                </div>
-              )}
-            </div>
-
-            <div>
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Professional Photography</h3>
-                  <p className="text-gray-600">
-                    From portrait sessions to large-scale events, we capture moments with technical excellence and
-                    artistic vision.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Cinematic Videography</h3>
-                  <p className="text-gray-600">
-                    We produce cinema-quality videos using state-of-the-art equipment and creative storytelling
-                    techniques.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Post-Production Mastery</h3>
-                  <p className="text-gray-600">
-                    Expert editing, color grading, motion graphics, and sound design transform raw footage into polished
-                    output.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">AI-Powered Content</h3>
-                  <p className="text-gray-600">
-                    Leveraging cutting-edge AI technology to enhance creativity and expand content possibilities.
-                  </p>
-                </div>
-              </div>
-            </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Who we serve</h2>
+          <p className="text-gray-600 text-lg mb-8 leading-relaxed max-w-2xl">
+            FloyMedia works with different types of clients, including:
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {WHO_WE_SERVE.map((label) => (
+              <span
+                key={label}
+                className="rounded-full bg-gray-100 text-gray-800 px-4 py-2 text-sm font-medium border border-gray-200"
+              >
+                {label}
+              </span>
+            ))}
           </div>
+          <p className="mt-10 text-gray-600 leading-relaxed max-w-2xl">
+            FloyMedia supports both personal and professional media needs.
+          </p>
         </div>
       </section>
 

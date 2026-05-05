@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Eye, EyeOff } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useAdminResetPassword } from '@/lib/hooks';
 
@@ -12,6 +13,8 @@ function ResetPasswordForm() {
   const mutation = useAdminResetPassword();
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,25 +39,45 @@ function ResetPasswordForm() {
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">New password</label>
-        <input
-          type="password"
-          required
-          minLength={6}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none bg-gray-50"
-        />
+        <div className="relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            required
+            minLength={6}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-4 pr-11 py-3 text-sm focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none bg-gray-50"
+          />
+          <button
+            type="button"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            onClick={() => setShowPassword((v) => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Confirm password</label>
-        <input
-          type="password"
-          required
-          minLength={6}
-          value={confirm}
-          onChange={(e) => setConfirm(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none bg-gray-50"
-        />
+        <div className="relative">
+          <input
+            type={showConfirm ? 'text' : 'password'}
+            required
+            minLength={6}
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-4 pr-11 py-3 text-sm focus:ring-2 focus:ring-[#045be2] focus:border-transparent outline-none bg-gray-50"
+          />
+          <button
+            type="button"
+            aria-label={showConfirm ? 'Hide confirm password' : 'Show confirm password'}
+            onClick={() => setShowConfirm((v) => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          >
+            {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
       </div>
       {password && confirm && password !== confirm && (
         <p className="text-sm text-red-600">Passwords do not match.</p>

@@ -117,7 +117,9 @@ export default function AdminTeamApplicationsPage() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button type="button" size="sm" variant="outline" onClick={() => openEdit(row)}>Review</Button>
+                    <Button type="button" size="sm" variant="outline" onClick={() => openEdit(row)}>
+                      View details
+                    </Button>
                     <ConfirmAction
                       triggerLabel="Delete"
                       title="Delete application?"
@@ -142,23 +144,75 @@ export default function AdminTeamApplicationsPage() {
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Review Application</DialogTitle>
-            <DialogDescription>Review candidate details and update their application status.</DialogDescription>
+            <DialogTitle>Application Details</DialogTitle>
+            <DialogDescription>View full applicant information and update status.</DialogDescription>
           </DialogHeader>
           {selectedApplication ? (
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 rounded-lg bg-gray-50 p-4 text-sm">
-                <div><span className="text-gray-500">Name</span><p className="font-medium">{selectedApplication.fullName}</p></div>
-                <div><span className="text-gray-500">Phone</span><p className="font-medium">{selectedApplication.phoneNumber}</p></div>
-                <div><span className="text-gray-500">Email</span><p className="font-medium">{selectedApplication.email}</p></div>
-                <div><span className="text-gray-500">Location</span><p className="font-medium">{selectedApplication.location || 'N/A'}</p></div>
-                <div><span className="text-gray-500">Skill</span><p className="font-medium">{selectedApplication.skillArea}</p></div>
-                <div><span className="text-gray-500">Experience</span><p className="font-medium">{selectedApplication.experienceLevel}</p></div>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-800">Applicant Information</h3>
               </div>
-              {selectedApplication.message ? <p className="rounded-lg border border-gray-200 p-4 text-sm text-gray-700">{selectedApplication.message}</p> : null}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 rounded-lg bg-gray-50 p-4 text-sm">
+                <div><span className="text-gray-500">Name</span><p className="font-medium text-gray-900">{selectedApplication.fullName || 'N/A'}</p></div>
+                <div><span className="text-gray-500">Email</span><p className="font-medium text-gray-900 break-all">{selectedApplication.email || 'N/A'}</p></div>
+                <div><span className="text-gray-500">Phone</span><p className="font-medium text-gray-900">{selectedApplication.phoneNumber || 'N/A'}</p></div>
+                <div><span className="text-gray-500">Location</span><p className="font-medium text-gray-900">{selectedApplication.location || 'N/A'}</p></div>
+                <div><span className="text-gray-500">Skill Area</span><p className="font-medium text-gray-900">{selectedApplication.skillArea || 'N/A'}</p></div>
+                <div><span className="text-gray-500">Experience</span><p className="font-medium text-gray-900">{selectedApplication.experienceLevel || 'N/A'}</p></div>
+                <div><span className="text-gray-500">Current Status</span><p className="font-medium text-gray-900">{selectedApplication.status || 'Pending'}</p></div>
+                <div><span className="text-gray-500">Availability</span><p className="font-medium text-gray-900">{selectedApplication.availability || 'N/A'}</p></div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <div className="rounded-lg border border-gray-200 p-4">
+                  <span className="text-gray-500">Portfolio Link</span>
+                  {selectedApplication.portfolioLink ? (
+                    <a
+                      href={selectedApplication.portfolioLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 block font-medium text-[#045be2] underline underline-offset-2 break-all"
+                    >
+                      {selectedApplication.portfolioLink}
+                    </a>
+                  ) : (
+                    <p className="mt-1 font-medium text-gray-900">N/A</p>
+                  )}
+                </div>
+                <div className="rounded-lg border border-gray-200 p-4">
+                  <span className="text-gray-500">Social Media</span>
+                  {selectedApplication.socialMediaLink ? (
+                    <a
+                      href={selectedApplication.socialMediaLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 block font-medium text-[#045be2] underline underline-offset-2 break-all"
+                    >
+                      {selectedApplication.socialMediaLink}
+                    </a>
+                  ) : (
+                    <p className="mt-1 font-medium text-gray-900">N/A</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-gray-200 p-4 text-sm">
+                <span className="text-gray-500">Equipment Owned</span>
+                <p className="mt-1 font-medium text-gray-900 whitespace-pre-wrap">{selectedApplication.equipmentOwned || 'N/A'}</p>
+              </div>
+
+              <div className="rounded-lg border border-gray-200 p-4 text-sm">
+                <span className="text-gray-500">Message</span>
+                <p className="mt-1 text-gray-700 whitespace-pre-wrap">{selectedApplication.message || 'N/A'}</p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm font-semibold text-gray-800">Update Application Status</p>
+                <p className="text-xs text-gray-500">Choose the current review stage for this applicant.</p>
+              </div>
               <Select value={status} onValueChange={setStatus}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select status" />
+                  <SelectValue placeholder="Select application status" />
                 </SelectTrigger>
                 <SelectContent>
                   {['Pending', 'Reviewed', 'Shortlisted', 'Accepted', 'Rejected'].map((s) => (
@@ -169,9 +223,9 @@ export default function AdminTeamApplicationsPage() {
             </div>
           ) : null}
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setEditOpen(false)}>Cancel</Button>
+            <Button type="button" variant="outline" onClick={() => setEditOpen(false)}>Close</Button>
             <Button type="button" onClick={updateRow} disabled={busyId === selectedApplication?.id} className="bg-[#045be2] hover:bg-[#034dc2]">
-              {busyId === selectedApplication?.id ? 'Saving...' : 'Save Update'}
+              {busyId === selectedApplication?.id ? 'Saving...' : 'Update Status'}
             </Button>
           </DialogFooter>
         </DialogContent>

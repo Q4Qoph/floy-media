@@ -6,16 +6,25 @@ import { Button } from '@/components/ui/button';
 import BookingForm from '@/components/BookingForm';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { usePublicSiteSettings } from '@/lib/hooks';
+import { getPageText } from '@/lib/page-content';
 
 export default function BookingPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const { data: siteSettings } = usePublicSiteSettings();
+  const content = siteSettings?.pageContent;
 
   return (
     <div className="w-full">
       <PageHero
-        title="Book Your Project"
-        description="Let&apos;s discuss your creative vision and bring it to life with our professional media production services."
-        eyebrow="Project Consultation"
+        title={getPageText(content, 'booking', 'title', 'Book Your Project')}
+        description={getPageText(
+          content,
+          'booking',
+          'description',
+          "Let's discuss your creative vision and bring it to life with our professional media production services."
+        )}
+        eyebrow={getPageText(content, 'booking', 'eyebrow', 'Project Consultation')}
         variant="blue"
       />
 

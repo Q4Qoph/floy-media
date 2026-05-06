@@ -3,10 +3,13 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/PageHero';
-import { usePublicPackages } from '@/lib/hooks';
+import { usePublicPackages, usePublicSiteSettings } from '@/lib/hooks';
+import { getPageText } from '@/lib/page-content';
 
 export default function PackagesPage() {
   const { data: apiPackages = [], isLoading } = usePublicPackages();
+  const { data: siteSettings } = usePublicSiteSettings();
+  const content = siteSettings?.pageContent;
 
   const displayedPackages = apiPackages.map((pkg, idx) => ({
     id: pkg.id,
@@ -21,9 +24,14 @@ export default function PackagesPage() {
   return (
     <div className="w-full">
       <PageHero
-        title="Our Packages"
-        description="FloyMedia offers tailor-made pricing based on project type, location, duration, production needs, editing requirements, and delivery format."
-        eyebrow="Pricing"
+        title={getPageText(content, 'packages', 'title', 'Our Packages')}
+        description={getPageText(
+          content,
+          'packages',
+          'description',
+          'FloyMedia offers tailor-made pricing based on project type, location, duration, production needs, editing requirements, and delivery format.'
+        )}
+        eyebrow={getPageText(content, 'packages', 'eyebrow', 'Pricing')}
         variant="slate"
       />
 
@@ -95,13 +103,17 @@ export default function PackagesPage() {
 
       <section className="py-20 md:py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Every Project Is Customized</h2>
-          <p className="text-xl text-gray-600 mb-8">Every project is customized to client needs.</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            {getPageText(content, 'packages', 'ctaTitle', 'Every Project Is Customized')}
+          </h2>
+          <p className="text-xl text-gray-600 mb-8">
+            {getPageText(content, 'packages', 'ctaDescription', 'Every project is customized to client needs.')}
+          </p>
           <Link
             href="/contact"
             className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
           >
-            Request Custom Quote
+            {getPageText(content, 'packages', 'ctaButton', 'Request Custom Quote')}
             <ArrowRight size={20} />
           </Link>
         </div>

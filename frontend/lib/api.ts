@@ -100,6 +100,29 @@ export interface HeroSectionPayload {
   carouselItems: HeroCarouselItem[];
 }
 
+export interface SiteNavLinkItem {
+  label: string;
+  href: string;
+}
+
+export interface SiteSettingsPayload {
+  id: string;
+  brandName: string;
+  navbarLogoUrl: string;
+  footerLogoUrl: string;
+  navbarLinks: SiteNavLinkItem[];
+  navbarCtaLabel: string;
+  navbarCtaHref: string;
+  footerDescription: string;
+  footerExploreLinks: SiteNavLinkItem[];
+  footerQuickLinks: SiteNavLinkItem[];
+  footerContactEmail?: string;
+  footerContactPhone?: string;
+  footerContactAddress?: string;
+  footerCopyrightText?: string;
+  pageContent?: Record<string, Record<string, string>>;
+}
+
 export interface GalleryCategoryItem {
   id: string;
   name: string;
@@ -211,6 +234,7 @@ export const publicApi = {
   listPackages: async () => (await apiClient.get<BackendResponse<PaginatedResult<PackageItem>>>('/packages')).data.data.items,
   listProjects: async () => (await apiClient.get<BackendResponse<PaginatedResult<ProjectItem>>>('/projects')).data.data.items,
   getHeroSection: async () => (await apiClient.get<BackendResponse<HeroSectionPayload>>('/hero')).data.data,
+  getSiteSettings: async () => (await apiClient.get<BackendResponse<SiteSettingsPayload>>('/site-settings')).data.data,
   listGalleryCategories: async () => (await apiClient.get<BackendResponse<GalleryCategoryItem[]>>('/gallery-categories')).data.data,
   createBooking: async (payload: BookingPayload) => (await apiClient.post<BackendResponse<any>>('/bookings', payload)).data,
   createContactMessage: async (payload: ContactPayload) => (await apiClient.post<BackendResponse<any>>('/contact', payload)).data,
@@ -298,6 +322,11 @@ export const adminApi = {
     (await apiClient.get<BackendResponse<HeroSectionPayload>>('/admin/hero', authHeader(token))).data.data,
   updateHeroSection: async (token: string, formData: FormData) =>
     (await apiClient.put<BackendResponse<HeroSectionPayload>>('/admin/hero', formData, multipartAuthHeader(token))).data.data,
+  getSiteSettings: async (token: string) =>
+    (await apiClient.get<BackendResponse<SiteSettingsPayload>>('/admin/site-settings', authHeader(token))).data.data,
+  updateSiteSettings: async (token: string, formData: FormData) =>
+    (await apiClient.put<BackendResponse<SiteSettingsPayload>>('/admin/site-settings', formData, multipartAuthHeader(token)))
+      .data.data,
 
   createPackage: async (token: string, payload: Record<string, unknown>) =>
     (await apiClient.post<BackendResponse<any>>('/admin/packages', payload, authHeader(token))).data,

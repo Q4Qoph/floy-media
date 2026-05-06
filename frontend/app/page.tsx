@@ -259,7 +259,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-20 bg-gray-50">
+      {/* <section className="py-16 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Short Intro</h2>
@@ -270,7 +270,7 @@ export default function HomePage() {
             </p>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="py-20 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
@@ -457,12 +457,6 @@ export default function HomePage() {
             >
               Request a Quote
             </Link>
-            <a
-              href="tel:+254702781292"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-white text-white hover:bg-white/10 font-semibold rounded-lg transition-colors"
-            >
-              Call: +254 702 781 292
-            </a>
           </div>
         </div>
       </section>

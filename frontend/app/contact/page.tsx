@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/PageHero';
-import { useCreateContactMessage } from '@/lib/hooks';
+import { useCreateContactMessage, usePublicSiteSettings } from '@/lib/hooks';
+import { getPageText } from '@/lib/page-content';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -16,6 +17,8 @@ export default function ContactPage() {
 
   const [submitted, setSubmitted] = useState(false);
   const contactMutation = useCreateContactMessage();
+  const { data: siteSettings } = usePublicSiteSettings();
+  const content = siteSettings?.pageContent;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -41,9 +44,14 @@ export default function ContactPage() {
   return (
     <div className="w-full">
       <PageHero
-        title="Get In Touch"
-        description="Contact FloyMedia for photography, videography, event coverage, corporate shoots, family photography, sports media, product shoots, and creative content production."
-        eyebrow="Bookings & Inquiries"
+        title={getPageText(content, 'contact', 'title', 'Get In Touch')}
+        description={getPageText(
+          content,
+          'contact',
+          'description',
+          'Contact FloyMedia for photography, videography, event coverage, corporate shoots, family photography, sports media, product shoots, and creative content production.'
+        )}
+        eyebrow={getPageText(content, 'contact', 'eyebrow', 'Bookings & Inquiries')}
         variant="blue"
       />
 

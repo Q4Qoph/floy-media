@@ -4,8 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Play, ArrowRight } from 'lucide-react';
 import PageHero from '@/components/PageHero';
-import { usePublicVideos } from '@/lib/hooks';
+import { usePublicSiteSettings, usePublicVideos } from '@/lib/hooks';
 import { mediaUrl } from '@/lib/api';
+import { getPageText } from '@/lib/page-content';
 
 function resolveMediaUrl(raw?: string | null): string | null {
   if (!raw?.trim()) return null;
@@ -15,6 +16,8 @@ function resolveMediaUrl(raw?: string | null): string | null {
 
 export default function VideosPage() {
   const { data: apiVideos = [], isLoading } = usePublicVideos();
+  const { data: siteSettings } = usePublicSiteSettings();
+  const content = siteSettings?.pageContent;
 
   const displayedVideos = apiVideos.map((video) => {
     const thumb = resolveMediaUrl(video.thumbnailUrl);
@@ -31,9 +34,14 @@ export default function VideosPage() {
   return (
     <div className="w-full">
       <PageHero
-        title="Video Highlights"
-        description="Watch FloyMedia video productions including wedding films, corporate videos, sports highlights, event coverage, brand stories, documentaries, and social media reels."
-        eyebrow="Watch & Explore"
+        title={getPageText(content, 'videos', 'title', 'Video Highlights')}
+        description={getPageText(
+          content,
+          'videos',
+          'description',
+          'Watch FloyMedia video productions including wedding films, corporate videos, sports highlights, event coverage, brand stories, documentaries, and social media reels.'
+        )}
+        eyebrow={getPageText(content, 'videos', 'eyebrow', 'Watch & Explore')}
         variant="orange"
       />
 
@@ -99,15 +107,22 @@ export default function VideosPage() {
 
       <section className="py-20 md:py-32 bg-gradient-to-r from-blue-600 to-cyan-500">
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Need Video Coverage?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            {getPageText(content, 'videos', 'ctaTitle', 'Need Video Coverage?')}
+          </h2>
           <p className="text-xl text-white/90 mb-8">
-            FloyMedia delivers high-quality video storytelling for people, brands, businesses, and communities.
+            {getPageText(
+              content,
+              'videos',
+              'ctaDescription',
+              'FloyMedia delivers high-quality video storytelling for people, brands, businesses, and communities.'
+            )}
           </p>
           <Link
             href="/bookings"
             className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 font-semibold rounded-lg transition-colors"
           >
-            Request a Quote
+            {getPageText(content, 'videos', 'ctaButton', 'Request a Quote')}
             <ArrowRight size={20} />
           </Link>
         </div>

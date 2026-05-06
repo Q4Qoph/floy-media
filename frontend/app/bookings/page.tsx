@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/PageHero';
-import { useCreateBooking } from '@/lib/hooks';
+import { useCreateBooking, usePublicSiteSettings } from '@/lib/hooks';
+import { getPageText } from '@/lib/page-content';
 
 export default function BookingsPage() {
   const [formData, setFormData] = useState({
@@ -18,6 +19,8 @@ export default function BookingsPage() {
 
   const [submitted, setSubmitted] = useState(false);
   const bookingMutation = useCreateBooking();
+  const { data: siteSettings } = usePublicSiteSettings();
+  const content = siteSettings?.pageContent;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -46,9 +49,14 @@ export default function BookingsPage() {
   return (
     <div className="w-full">
       <PageHero
-        title="Book Your Session"
-        description="Book FloyMedia for your next event, shoot, brand project, corporate function, sports coverage, family session, product campaign, or community documentation project."
-        eyebrow="Quick Booking"
+        title={getPageText(content, 'bookings', 'title', 'Book Your Session')}
+        description={getPageText(
+          content,
+          'bookings',
+          'description',
+          'Book FloyMedia for your next event, shoot, brand project, corporate function, sports coverage, family session, product campaign, or community documentation project.'
+        )}
+        eyebrow={getPageText(content, 'bookings', 'eyebrow', 'Quick Booking')}
         variant="teal"
       />
 

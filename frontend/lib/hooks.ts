@@ -24,6 +24,12 @@ export const usePublicHeroSection = () =>
     queryFn: publicApi.getHeroSection,
   });
 
+export const usePublicSiteSettings = () =>
+  useQuery({
+    queryKey: ['public-site-settings'],
+    queryFn: publicApi.getSiteSettings,
+  });
+
 export const usePublicGallery = () =>
   useQuery({
     queryKey: ['public-gallery'],
@@ -140,5 +146,12 @@ export const useAdminHeroSection = (token: string | null) =>
   useQuery({
     queryKey: ['admin-hero-section', token],
     queryFn: () => adminApi.getHeroSection(token as string),
+    enabled: Boolean(token),
+  });
+
+export const useAdminSiteSettings = (token: string | null) =>
+  useQuery({
+    queryKey: ['admin-site-settings', token],
+    queryFn: () => adminApi.getSiteSettings(token as string),
     enabled: Boolean(token),
   });

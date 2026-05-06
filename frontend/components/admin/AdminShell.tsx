@@ -21,6 +21,7 @@ import {
   Bell,
   Images,
   UserCog,
+  Globe,
 } from 'lucide-react';
 
 const baseLinks = [
@@ -30,6 +31,7 @@ const baseLinks = [
   { href: '/admin/videos', label: 'Videos', icon: Video },
   { href: '/admin/services', label: 'Services', icon: Wrench },
   { href: '/admin/hero', label: 'Homepage Hero', icon: Images },
+  { href: '/admin/site-settings', label: 'Site Settings', icon: Globe },
   { href: '/admin/messages', label: 'Messages', icon: Mail },
   { href: '/admin/team-applications', label: 'Team Applications', icon: Users },
   { href: '/admin/packages', label: 'Packages', icon: Package },

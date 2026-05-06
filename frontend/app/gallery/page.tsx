@@ -5,8 +5,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import PageHero from '@/components/PageHero';
-import { usePublicGallery } from '@/lib/hooks';
+import { usePublicGallery, usePublicSiteSettings } from '@/lib/hooks';
 import { mediaUrl } from '@/lib/api';
+import { getPageText } from '@/lib/page-content';
 
 function resolveMediaUrl(raw?: string | null): string | null {
   if (!raw?.trim()) return null;
@@ -16,6 +17,8 @@ function resolveMediaUrl(raw?: string | null): string | null {
 
 export default function GalleryPage() {
   const { data: apiGallery = [], isLoading } = usePublicGallery();
+  const { data: siteSettings } = usePublicSiteSettings();
+  const content = siteSettings?.pageContent;
   const [selectedCategory, setSelectedCategory] = useState('All');
 
   const normalizedItems = apiGallery
@@ -41,9 +44,14 @@ export default function GalleryPage() {
   return (
     <div className="w-full">
       <PageHero
-        title="Gallery"
-        description="Explore the FloyMedia collection of photography and videography projects including weddings, corporate shoots, sports, family sessions, product photography, events, and community work."
-        eyebrow="Portfolio"
+        title={getPageText(content, 'gallery', 'title', 'Gallery')}
+        description={getPageText(
+          content,
+          'gallery',
+          'description',
+          'Explore the FloyMedia collection of photography and videography projects including weddings, corporate shoots, sports, family sessions, product photography, events, and community work.'
+        )}
+        eyebrow={getPageText(content, 'gallery', 'eyebrow', 'Portfolio')}
         variant="teal"
       />
 
@@ -116,15 +124,22 @@ export default function GalleryPage() {
 
       <section className="py-20 md:py-32 bg-gradient-to-r from-blue-600 to-cyan-500">
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Our Gallery Is Regularly Updated</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            {getPageText(content, 'gallery', 'ctaTitle', 'Our Gallery Is Regularly Updated')}
+          </h2>
           <p className="text-xl text-white/90 mb-8">
-            Book FloyMedia for your next wedding, event, corporate shoot, family session, or community project.
+            {getPageText(
+              content,
+              'gallery',
+              'ctaDescription',
+              'Book FloyMedia for your next wedding, event, corporate shoot, family session, or community project.'
+            )}
           </p>
           <Link
             href="/bookings"
             className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 font-semibold rounded-lg transition-colors"
           >
-            Book Your Session
+            {getPageText(content, 'gallery', 'ctaButton', 'Book Your Session')}
             <ArrowRight size={20} />
           </Link>
         </div>

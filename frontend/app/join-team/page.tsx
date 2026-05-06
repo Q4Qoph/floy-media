@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/PageHero';
-import { useCreateTeamApplication } from '@/lib/hooks';
+import { useCreateTeamApplication, usePublicSiteSettings } from '@/lib/hooks';
+import { getPageText } from '@/lib/page-content';
 
 export default function JoinTeamPage() {
   const [formData, setFormData] = useState({
@@ -18,6 +19,8 @@ export default function JoinTeamPage() {
 
   const [submitted, setSubmitted] = useState(false);
   const teamMutation = useCreateTeamApplication();
+  const { data: siteSettings } = usePublicSiteSettings();
+  const content = siteSettings?.pageContent;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -45,9 +48,14 @@ export default function JoinTeamPage() {
   return (
     <div className="w-full">
       <PageHero
-        title="Join Our Team"
-        description="Join the FloyMedia creative team. We are building a network of photographers, videographers, editors, designers, drone operators, and storytellers."
-        eyebrow="Careers"
+        title={getPageText(content, 'joinTeam', 'title', 'Join Our Team')}
+        description={getPageText(
+          content,
+          'joinTeam',
+          'description',
+          'Join the FloyMedia creative team. We are building a network of photographers, videographers, editors, designers, drone operators, and storytellers.'
+        )}
+        eyebrow={getPageText(content, 'joinTeam', 'eyebrow', 'Careers')}
         variant="indigo"
       />
 

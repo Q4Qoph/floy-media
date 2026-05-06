@@ -4,11 +4,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { mediaUrl } from '@/lib/api';
+import { usePublicSiteSettings } from '@/lib/hooks';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const pathname = usePathname();
-  const mainLinks = [
+  const { data: siteSettings } = usePublicSiteSettings();
+
+  const defaultMainLinks = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
     { href: '/services', label: 'Services' },
@@ -16,12 +20,21 @@ export default function Footer() {
     { href: '/videos', label: 'Videos' },
     { href: '/packages', label: 'Packages' }
   ];
-  const quickLinks = [
+  const defaultQuickLinks = [
     { href: '/bookings', label: 'Bookings' },
     { href: '/join-team', label: 'Join Team' },
     { href: '/contact', label: 'Contact' },
     { href: '/admin/login', label: 'Staff / Admin Login' }
   ];
+  const mainLinks = siteSettings?.footerExploreLinks?.length ? siteSettings.footerExploreLinks : defaultMainLinks;
+  const quickLinks = siteSettings?.footerQuickLinks?.length ? siteSettings.footerQuickLinks : defaultQuickLinks;
+  const footerDescription = siteSettings?.footerDescription ||
+    'FloyMedia is a creative media production company providing photography, videography, event coverage, corporate shoots, sports media, family photography, product content, and visual storytelling services.';
+  const footerLogo = mediaUrl(siteSettings?.footerLogoUrl || '/logo.png');
+  const footerEmail = siteSettings?.footerContactEmail || 'hello@floymedia.com';
+  const footerPhone = siteSettings?.footerContactPhone || '+254 702 781 292';
+  const footerAddress = siteSettings?.footerContactAddress || 'Nairobi, Kenya';
+  const copyrightText = siteSettings?.footerCopyrightText?.trim();
 
   if (pathname.startsWith('/admin')) return null;
 
@@ -32,11 +45,10 @@ export default function Footer() {
           {/* Company Info */}
           <div>
             <Link href="/" className="inline-flex mb-4">
-              <Image src="/logo.png" alt="FloyMedia logo" width={80} height={70} className="rounded-md" />
+              <Image src={footerLogo} alt="FloyMedia logo" width={80} height={70} className="rounded-md object-cover" />
             </Link>
             <p className="text-xs md:text-sm text-black/70 leading-relaxed">
-              FloyMedia is a creative media production company providing photography, videography, event coverage,
-              corporate shoots, sports media, family photography, product content, and visual storytelling services.
+              {footerDescription}
             </p>
           </div>
 
@@ -74,19 +86,19 @@ export default function Footer() {
             <ul className="space-y-3 text-xs md:text-sm text-black/60">
               <li className="flex items-center gap-3">
                 <Mail size={16} className="flex-shrink-0" />
-                <a href="mailto:hello@floymedia.com" className="hover:text-black transition-colors">
-                  hello@floymedia.com
+                <a href={`mailto:${footerEmail}`} className="hover:text-black transition-colors">
+                  {footerEmail}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={16} className="flex-shrink-0" />
-                <a href="tel:+254702781292" className="hover:text-black transition-colors">
-                  +254 702 781 292
+                <a href={`tel:${footerPhone.replace(/\s+/g, '')}`} className="hover:text-black transition-colors">
+                  {footerPhone}
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin size={16} className="flex-shrink-0 mt-0.5" />
-                <span>+254 714 591 221</span>
+                <span>{footerAddress}</span>
               </li>
             </ul>
           </div>
@@ -95,7 +107,7 @@ export default function Footer() {
         {/* Divider */}
         <div className="border-t border-black/10 pt-8">
           <p className="text-center text-xs md:text-sm text-black/60">
-            {`© ${currentYear} FloyMedia. All rights reserved.`}
+            {copyrightText || `© ${currentYear} FloyMedia. All rights reserved.`}
           </p>
         </div>
       </div>

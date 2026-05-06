@@ -4,8 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle, Camera, Film, Scissors, Drone } from 'lucide-react';
 import PageHero from '@/components/PageHero';
-import { usePublicServices } from '@/lib/hooks';
+import { usePublicServices, usePublicSiteSettings } from '@/lib/hooks';
 import { mediaUrl } from '@/lib/api';
+import { getPageText } from '@/lib/page-content';
 
 function resolveMediaUrl(raw?: string | null): string | null {
   if (!raw?.trim()) return null;
@@ -15,6 +16,8 @@ function resolveMediaUrl(raw?: string | null): string | null {
 
 export default function ServicesPage() {
   const { data: apiServices = [], isLoading } = usePublicServices();
+  const { data: siteSettings } = usePublicSiteSettings();
+  const content = siteSettings?.pageContent;
   const displayedServices = apiServices.map((item, idx) => ({
     id: item.id,
     title: item.serviceName,
@@ -34,9 +37,14 @@ export default function ServicesPage() {
   return (
     <div className="w-full">
       <PageHero
-        title="Our Services"
-        description="FloyMedia offers complete creative media solutions including photography, videography, and storytelling for individuals, businesses, and organizations."
-        eyebrow="What We Offer"
+        title={getPageText(content, 'services', 'title', 'Our Services')}
+        description={getPageText(
+          content,
+          'services',
+          'description',
+          'FloyMedia offers complete creative media solutions including photography, videography, and storytelling for individuals, businesses, and organizations.'
+        )}
+        eyebrow={getPageText(content, 'services', 'eyebrow', 'What We Offer')}
         variant="blue"
       />
 
@@ -119,15 +127,17 @@ export default function ServicesPage() {
 
       <section className="py-20 md:py-32 bg-gradient-to-r from-blue-600 to-cyan-500">
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Can&apos;t Find What You&apos;re Looking For?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            {getPageText(content, 'services', 'ctaTitle', "Can't Find What You're Looking For?")}
+          </h2>
           <p className="text-xl text-white/90 mb-8">
-            We offer custom packages tailored to your specific needs and budget
+            {getPageText(content, 'services', 'ctaDescription', 'We offer custom packages tailored to your specific needs and budget')}
           </p>
           <Link
             href="/contact"
             className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 font-semibold rounded-lg transition-colors"
           >
-            Contact Us for Custom Quote
+            {getPageText(content, 'services', 'ctaButton', 'Contact Us for Custom Quote')}
             <ArrowRight size={20} />
           </Link>
         </div>

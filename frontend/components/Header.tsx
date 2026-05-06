@@ -5,15 +5,18 @@ import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { mediaUrl } from '@/lib/api';
+import { usePublicSiteSettings } from '@/lib/hooks';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith('/admin');
+  const { data: siteSettings } = usePublicSiteSettings();
 
   if (isAdminRoute) return null;
 
-  const navLinks = [
+  const defaultNavLinks = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
     { href: '/services', label: 'Services' },
@@ -24,6 +27,10 @@ export default function Header() {
     { href: '/join-team', label: 'Join Team' },
     { href: '/contact', label: 'Contact' },
   ];
+  const navLinks = siteSettings?.navbarLinks?.length ? siteSettings.navbarLinks : defaultNavLinks;
+  const ctaLabel = siteSettings?.navbarCtaLabel || 'Book Now';
+  const ctaHref = siteSettings?.navbarCtaHref || '/bookings';
+  const logoSrc = mediaUrl(siteSettings?.navbarLogoUrl || '/logo.png');
 
   const getLinkClassName = (href: string) => {
     const isActive = pathname === href;
@@ -37,7 +44,7 @@ export default function Header() {
       <nav className="flex items-center justify-between h-24 px-6 md:px-8 max-w-7xl mx-auto">
         {/* Logo */}
         <Link href="/" className="flex items-center p-2">
-          <Image src="/logo.png" alt="FloyMedia logo" width={72} height={72} className="rounded-md" />
+          <Image src={logoSrc} alt="FloyMedia logo" width={72} height={72} className="rounded-md object-cover" />
         </Link>
 
         {/* Desktop Navigation */}
@@ -56,10 +63,10 @@ export default function Header() {
         {/* CTA Button */}
         <div className="hidden md:flex items-center gap-4">
           <Link 
-            href="/bookings" 
+            href={ctaHref}
             className="text-sm font-semibold text-white bg-[#fd780c] hover:bg-[#e76b08] transition-colors px-6 py-2 rounded-lg"
           >
-            Book Now
+            {ctaLabel}
           </Link>
         </div>
 
@@ -90,11 +97,11 @@ export default function Header() {
               </Link>
             ))}
             <Link 
-              href="/bookings" 
+              href={ctaHref}
               className="text-sm font-semibold text-white bg-[#fd780c] hover:bg-[#e76b08] transition-colors px-6 py-2 rounded-lg text-center mt-4"
               onClick={() => setIsOpen(false)}
             >
-              Book Now
+              {ctaLabel}
             </Link>
           </div>
         </div>

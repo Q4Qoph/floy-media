@@ -4,8 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle, Focus, Layers, Sparkles, Target } from 'lucide-react';
 import PageHero from '@/components/PageHero';
-import { usePublicGallery } from '@/lib/hooks';
+import { usePublicGallery, usePublicSiteSettings } from '@/lib/hooks';
 import { mediaUrl } from '@/lib/api';
+import { getPageText } from '@/lib/page-content';
 
 const CORE_VALUES = [
   'Creativity',
@@ -58,6 +59,8 @@ function resolveMediaUrl(raw?: string | null): string | null {
 
 export default function AboutPage() {
   const { data: gallery = [], isLoading } = usePublicGallery();
+  const { data: siteSettings } = usePublicSiteSettings();
+  const content = siteSettings?.pageContent;
 
   const withImages = gallery
     .map((item) => {
@@ -73,9 +76,14 @@ export default function AboutPage() {
   return (
     <div className="w-full">
       <PageHero
-        eyebrow="About us"
-        title="About FloyMedia"
-        description="FloyMedia is a creative media company built on photography, videography, storytelling, and digital content. We help individuals, families, organizations, and brands capture moments and share their stories with clarity and impact."
+        eyebrow={getPageText(content, 'about', 'eyebrow', 'About us')}
+        title={getPageText(content, 'about', 'title', 'About FloyMedia')}
+        description={getPageText(
+          content,
+          'about',
+          'description',
+          'FloyMedia is a creative media company built on photography, videography, storytelling, and digital content. We help individuals, families, organizations, and brands capture moments and share their stories with clarity and impact.'
+        )}
       />
 
       {/* Intro + image — image height scales with width (3:2), aligns with story block */}

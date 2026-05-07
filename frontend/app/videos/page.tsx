@@ -4,9 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Play, ArrowRight } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { motion } from 'framer-motion';
 import { usePublicSiteSettings, usePublicVideos } from '@/lib/hooks';
 import { mediaUrl } from '@/lib/api';
 import { getPageText } from '@/lib/page-content';
+import { fadeUp, viewportOnce } from '@/lib/animations';
 
 function resolveMediaUrl(raw?: string | null): string | null {
   if (!raw?.trim()) return null;
@@ -45,9 +47,26 @@ export default function VideosPage() {
         variant="orange"
       />
 
-      <section className="py-20 md:py-32 bg-white">
+      <motion.section
+        className="py-20 md:py-32 bg-white"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          {isLoading && <div className="py-16 text-center text-gray-500">Loading videos...</div>}
+          {isLoading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <div key={idx} className="animate-pulse">
+                  <div className="h-72 rounded-2xl bg-gray-200 mb-6" />
+                  <div className="h-5 w-24 rounded-full bg-gray-100 mb-3" />
+                  <div className="h-5 w-2/3 rounded bg-gray-200 mb-2" />
+                  <div className="h-4 w-5/6 rounded bg-gray-100" />
+                </div>
+              ))}
+            </div>
+          )}
 
           {!isLoading && displayedVideos.length === 0 && (
             <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 py-20 text-center text-gray-600">
@@ -103,9 +122,15 @@ export default function VideosPage() {
             </div>
           )}
         </div>
-      </section>
+      </motion.section>
 
-      <section className="py-20 md:py-32 bg-gradient-to-r from-blue-600 to-cyan-500">
+      <motion.section
+        className="py-20 md:py-32 bg-gradient-to-r from-blue-600 to-cyan-500"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             {getPageText(content, 'videos', 'ctaTitle', 'Need Video Coverage?')}
@@ -126,7 +151,7 @@ export default function VideosPage() {
             <ArrowRight size={20} />
           </Link>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

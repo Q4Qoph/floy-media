@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { motion } from 'framer-motion';
 import { usePublicPackages, usePublicSiteSettings } from '@/lib/hooks';
 import { getPageText } from '@/lib/page-content';
+import { fadeUp, viewportOnce } from '@/lib/animations';
 
 export default function PackagesPage() {
   const { data: apiPackages = [], isLoading } = usePublicPackages();
@@ -37,7 +39,25 @@ export default function PackagesPage() {
 
       <section className="py-20 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          {isLoading && <div className="py-16 text-center text-gray-500">Loading packages...</div>}
+          {isLoading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <div key={idx} className="rounded-2xl p-8 border-2 border-gray-100 animate-pulse">
+                  <div className="h-8 w-2/3 rounded bg-gray-200 mb-3" />
+                  <div className="h-4 w-full rounded bg-gray-100 mb-2" />
+                  <div className="h-4 w-5/6 rounded bg-gray-100 mb-4" />
+                  <div className="h-3 w-24 rounded bg-gray-100 mb-4" />
+                  <div className="h-10 w-40 rounded bg-gray-200 mb-8" />
+                  <div className="space-y-3 mb-8">
+                    {Array.from({ length: 4 }).map((__, fidx) => (
+                      <div key={fidx} className="h-4 w-11/12 rounded bg-gray-100" />
+                    ))}
+                  </div>
+                  <div className="h-11 w-full rounded-lg bg-gray-200" />
+                </div>
+              ))}
+            </div>
+          )}
 
           {!isLoading && displayedPackages.length === 0 && (
             <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 py-20 text-center text-gray-600">
@@ -101,7 +121,13 @@ export default function PackagesPage() {
         </div>
       </section>
 
-      <section className="py-20 md:py-32 bg-gray-50">
+      <motion.section
+        className="py-20 md:py-32 bg-gray-50"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             {getPageText(content, 'packages', 'ctaTitle', 'Every Project Is Customized')}
@@ -117,7 +143,7 @@ export default function PackagesPage() {
             <ArrowRight size={20} />
           </Link>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

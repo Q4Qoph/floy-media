@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { motion } from 'framer-motion';
 import { useCreateBooking, usePublicSiteSettings } from '@/lib/hooks';
 import { getPageText } from '@/lib/page-content';
+import { fadeUp, staggerContainer, staggerItem, viewportOnce } from '@/lib/animations';
 
 export default function BookingsPage() {
   const [formData, setFormData] = useState({
@@ -61,7 +63,13 @@ export default function BookingsPage() {
       />
 
       {/* Booking Form Section */}
-      <section className="py-20 md:py-32 bg-white">
+      <motion.section
+        className="py-20 md:py-32 bg-white"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-2xl mx-auto px-6 md:px-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name */}
@@ -197,38 +205,44 @@ export default function BookingsPage() {
             </div>
           )}
         </div>
-      </section>
+      </motion.section>
 
       {/* Info Section */}
-      <section className="py-20 md:py-32 bg-gray-50">
+      <motion.section
+        className="py-20 md:py-32 bg-gray-50"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
+          <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-8" variants={staggerContainer}>
+            <motion.div className="text-center" variants={staggerItem}>
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-lg">1</span>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Fill Out Form</h3>
               <p className="text-gray-600">Provide your details and project requirements</p>
-            </div>
+            </motion.div>
 
-            <div className="text-center">
+            <motion.div className="text-center" variants={staggerItem}>
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-lg">2</span>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Confirmation</h3>
               <p className="text-gray-600">We'll contact you to confirm details and finalize</p>
-            </div>
+            </motion.div>
 
-            <div className="text-center">
+            <motion.div className="text-center" variants={staggerItem}>
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-lg">3</span>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Create Magic</h3>
               <p className="text-gray-600">We'll deliver amazing photos and videos</p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

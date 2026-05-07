@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { motion } from 'framer-motion';
 import { useCreateTeamApplication, usePublicSiteSettings } from '@/lib/hooks';
 import { getPageText } from '@/lib/page-content';
+import { fadeUp, staggerContainer, staggerItem, viewportOnce } from '@/lib/animations';
 
 export default function JoinTeamPage() {
   const [formData, setFormData] = useState({
@@ -60,7 +62,13 @@ export default function JoinTeamPage() {
       />
 
       {/* Application Form */}
-      <section className="py-20 md:py-32 bg-white">
+      <motion.section
+        className="py-20 md:py-32 bg-white"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-2xl mx-auto px-6 md:px-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name */}
@@ -198,46 +206,52 @@ export default function JoinTeamPage() {
             </div>
           )}
         </div>
-      </section>
+      </motion.section>
 
       {/* Why Join Us */}
-      <section className="py-20 md:py-32 bg-gray-50">
+      <motion.section
+        className="py-20 md:py-32 bg-gray-50"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-12 text-center">Why Join FloyMedia</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-2xl border-2 border-gray-200">
+          <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-8" variants={staggerContainer}>
+            <motion.div className="bg-white p-8 rounded-2xl border-2 border-gray-200" variants={staggerItem}>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Competitive Compensation</h3>
               <p className="text-gray-600">We offer competitive rates and benefits for all team members</p>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-8 rounded-2xl border-2 border-gray-200">
+            <motion.div className="bg-white p-8 rounded-2xl border-2 border-gray-200" variants={staggerItem}>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Cutting-Edge Equipment</h3>
               <p className="text-gray-600">Access to the latest professional photography and videography gear</p>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-8 rounded-2xl border-2 border-gray-200">
+            <motion.div className="bg-white p-8 rounded-2xl border-2 border-gray-200" variants={staggerItem}>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Creative Freedom</h3>
               <p className="text-gray-600">Work on diverse projects that push your creative boundaries</p>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-8 rounded-2xl border-2 border-gray-200">
+            <motion.div className="bg-white p-8 rounded-2xl border-2 border-gray-200" variants={staggerItem}>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Professional Growth</h3>
               <p className="text-gray-600">Training and development opportunities to advance your career</p>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-8 rounded-2xl border-2 border-gray-200">
+            <motion.div className="bg-white p-8 rounded-2xl border-2 border-gray-200" variants={staggerItem}>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Collaborative Team</h3>
               <p className="text-gray-600">Work with talented creatives in a supportive environment</p>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-8 rounded-2xl border-2 border-gray-200">
+            <motion.div className="bg-white p-8 rounded-2xl border-2 border-gray-200" variants={staggerItem}>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Flexible Schedule</h3>
               <p className="text-gray-600">Balance between project work and personal time</p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

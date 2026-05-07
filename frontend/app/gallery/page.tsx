@@ -5,9 +5,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { motion } from 'framer-motion';
 import { usePublicGallery, usePublicSiteSettings } from '@/lib/hooks';
 import { mediaUrl } from '@/lib/api';
 import { getPageText } from '@/lib/page-content';
+import { fadeUp, viewportOnce } from '@/lib/animations';
 
 function resolveMediaUrl(raw?: string | null): string | null {
   if (!raw?.trim()) return null;
@@ -55,7 +57,13 @@ export default function GalleryPage() {
         variant="teal"
       />
 
-      <section className="py-12 md:py-16 bg-white border-b border-gray-200">
+      <motion.section
+        className="py-12 md:py-16 bg-white border-b border-gray-200"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           {dynamicCategories.length <= 1 ? null : (
             <div className="flex flex-wrap gap-3 justify-center">
@@ -76,12 +84,26 @@ export default function GalleryPage() {
             </div>
           )}
         </div>
-      </section>
+      </motion.section>
 
-      <section className="py-20 md:py-32 bg-white">
+      <motion.section
+        className="py-20 md:py-32 bg-white"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           {isLoading ? (
-            <div className="py-16 text-center text-gray-500">Loading gallery...</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <div key={idx} className="animate-pulse">
+                  <div className="h-80 rounded-2xl bg-gray-200 mb-4" />
+                  <div className="h-5 w-2/3 rounded bg-gray-200 mb-2" />
+                  <div className="h-4 w-1/3 rounded bg-gray-100" />
+                </div>
+              ))}
+            </div>
           ) : normalizedItems.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 py-20 text-center text-gray-600">
               <p className="font-medium">No gallery items yet</p>
@@ -120,9 +142,15 @@ export default function GalleryPage() {
             </div>
           )}
         </div>
-      </section>
+      </motion.section>
 
-      <section className="py-20 md:py-32 bg-gradient-to-r from-blue-600 to-cyan-500">
+      <motion.section
+        className="py-20 md:py-32 bg-gradient-to-r from-blue-600 to-cyan-500"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             {getPageText(content, 'gallery', 'ctaTitle', 'Our Gallery Is Regularly Updated')}
@@ -143,7 +171,7 @@ export default function GalleryPage() {
             <ArrowRight size={20} />
           </Link>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { motion } from 'framer-motion';
 import { useCreateContactMessage, usePublicSiteSettings } from '@/lib/hooks';
 import { getPageText } from '@/lib/page-content';
+import { fadeUp, viewportOnce } from '@/lib/animations';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -56,7 +58,13 @@ export default function ContactPage() {
       />
 
       {/* Contact Section */}
-      <section className="py-20 md:py-32 bg-white">
+      <motion.section
+        className="py-20 md:py-32 bg-white"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
@@ -226,7 +234,7 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

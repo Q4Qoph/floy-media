@@ -4,9 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Focus, Layers, Sparkles, Target } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { motion } from 'framer-motion';
 import { usePublicGallery, usePublicSiteSettings } from '@/lib/hooks';
 import { mediaUrl } from '@/lib/api';
 import { getPageLines, getPageText } from '@/lib/page-content';
+import { fadeUp, staggerContainer, staggerItem, viewportOnce } from '@/lib/animations';
 
 /** Defaults when CMS “one per line” fields are empty */
 const CORE_VALUES = [
@@ -76,8 +78,14 @@ export default function AboutPage() {
       />
 
       {/* Intro + image — image height scales with width (3:2), aligns with story block */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
+      <motion.section
+        className="py-16 md:py-24 bg-white"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
+        <motion.div className="max-w-7xl mx-auto px-6 md:px-8" variants={staggerContainer}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-start">
             <div className="space-y-5">
               <p className="text-xs font-semibold tracking-widest text-[#045be2] uppercase">
@@ -143,13 +151,19 @@ export default function AboutPage() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
       {/* Mission & Vision — same card language as rest of site */}
-      <section className="py-16 md:py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          <article className="rounded-2xl bg-white border-2 border-gray-200 p-8 md:p-10">
+      <motion.section
+        className="py-16 md:py-24 bg-gray-50"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
+        <motion.div className="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8" variants={staggerContainer}>
+          <motion.article className="rounded-2xl bg-white border-2 border-gray-200 p-8 md:p-10" variants={staggerItem}>
             <div className="flex items-start gap-4 mb-5">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#045be2]">
                 <Target size={20} />
@@ -168,9 +182,9 @@ export default function AboutPage() {
                 'To provide professional photography, videography, and creative media production services that help clients capture moments, tell stories, promote brands, document impact, and communicate visually with confidence.'
               )}
             </p>
-          </article>
+          </motion.article>
 
-          <article className="rounded-2xl bg-white border-2 border-gray-200 p-8 md:p-10">
+          <motion.article className="rounded-2xl bg-white border-2 border-gray-200 p-8 md:p-10" variants={staggerItem}>
             <div className="flex items-start gap-4 mb-5">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#045be2]">
                 <Sparkles size={20} />
@@ -189,12 +203,18 @@ export default function AboutPage() {
                 'To become a trusted creative media company in East Africa, known for high-quality photography, videography, storytelling, digital gallery delivery, corporate media production, and community impact documentation.'
               )}
             </p>
-          </article>
-        </div>
-      </section>
+          </motion.article>
+        </motion.div>
+      </motion.section>
 
       {/* Core values */}
-      <section className="py-16 md:py-24 bg-white">
+      <motion.section
+        className="py-16 md:py-24 bg-white"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="max-w-2xl mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
@@ -209,19 +229,20 @@ export default function AboutPage() {
               )}
             </p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          <motion.div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3" variants={staggerContainer}>
             {coreValuesList.map((label, idx) => (
-              <div
+              <motion.div
                 key={`${label}-${idx}`}
+                variants={staggerItem}
                 className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-center transition-colors hover:border-blue-300"
               >
                 <Focus className="mx-auto mb-2 text-[#045be2]" size={18} />
                 <p className="font-medium text-gray-900 text-sm leading-snug">{label}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* What we have — light section like gallery/services */}
       <section className="py-16 md:py-24 bg-gray-50 border-y border-gray-200">

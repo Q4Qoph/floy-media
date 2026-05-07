@@ -4,9 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle, Camera, Film, Scissors, Drone } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { motion } from 'framer-motion';
 import { usePublicServices, usePublicSiteSettings } from '@/lib/hooks';
 import { mediaUrl } from '@/lib/api';
 import { getPageText } from '@/lib/page-content';
+import { fadeUp, viewportOnce } from '@/lib/animations';
 
 function resolveMediaUrl(raw?: string | null): string | null {
   if (!raw?.trim()) return null;
@@ -50,7 +52,36 @@ export default function ServicesPage() {
 
       <section className="py-20 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-8">
-          {isLoading && <div className="py-20 text-center text-gray-500">Loading services...</div>}
+          {isLoading && (
+            <div className="space-y-16">
+              {Array.from({ length: 3 }).map((_, idx) => (
+                <div key={idx} className="animate-pulse">
+                  <div className={`flex flex-col ${idx % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 items-center`}>
+                    <div className="w-full lg:w-1/2">
+                      <div className="h-96 rounded-2xl bg-gray-200" />
+                    </div>
+                    <div className="w-full lg:w-1/2">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-12 h-12 rounded-xl bg-gray-200" />
+                        <div className="h-10 w-56 rounded bg-gray-200" />
+                      </div>
+                      <div className="h-4 w-full rounded bg-gray-100 mb-3" />
+                      <div className="h-4 w-11/12 rounded bg-gray-100 mb-8" />
+                      <div className="space-y-3 mb-8">
+                        {Array.from({ length: 4 }).map((__, fidx) => (
+                          <div key={fidx} className="h-4 w-5/6 rounded bg-gray-100" />
+                        ))}
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="h-6 w-40 rounded bg-gray-200" />
+                        <div className="h-11 w-36 rounded-lg bg-gray-200" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {!isLoading && displayedServices.length === 0 && (
             <div className="py-20 text-center text-gray-500 rounded-2xl border border-dashed border-gray-200 bg-gray-50">
@@ -125,7 +156,13 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <section className="py-20 md:py-32 bg-gradient-to-r from-blue-600 to-cyan-500">
+      <motion.section
+        className="py-20 md:py-32 bg-gradient-to-r from-blue-600 to-cyan-500"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             {getPageText(content, 'services', 'ctaTitle', "Can't Find What You're Looking For?")}
@@ -141,7 +178,7 @@ export default function ServicesPage() {
             <ArrowRight size={20} />
           </Link>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

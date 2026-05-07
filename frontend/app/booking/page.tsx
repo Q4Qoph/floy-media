@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/button';
 import BookingForm from '@/components/BookingForm';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import { motion } from 'framer-motion';
 import { usePublicSiteSettings } from '@/lib/hooks';
 import { getPageText } from '@/lib/page-content';
+import { fadeUp, staggerContainer, staggerItem, viewportOnce } from '@/lib/animations';
 
 export default function BookingPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -29,7 +31,13 @@ export default function BookingPage() {
       />
 
       {/* Main Content */}
-      <section className="py-16 md:py-24 bg-background">
+      <motion.section
+        className="py-16 md:py-24 bg-background"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Contact Information */}
@@ -155,14 +163,20 @@ export default function BookingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* FAQ Section */}
-      <section className="py-16 md:py-24 bg-card">
+      <motion.section
+        className="py-16 md:py-24 bg-card"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <h2 className="text-3xl font-bold mb-12 text-center">Frequently Asked Questions</h2>
 
-          <div className="space-y-6">
+          <motion.div className="space-y-6" variants={staggerContainer}>
             {[
               {
                 q: 'How long does a typical project take?',
@@ -189,17 +203,23 @@ export default function BookingPage() {
                 a: 'Yes, we include revisions as part of our service. We&apos;ll work with you until you&apos;re completely satisfied with the final product.',
               },
             ].map((item, idx) => (
-              <div key={idx} className="p-6 rounded-lg border border-border hover:border-primary/50 transition-colors">
+              <motion.div key={idx} className="p-6 rounded-lg border border-border hover:border-primary/50 transition-colors" variants={staggerItem}>
                 <h3 className="font-semibold mb-2">{item.q}</h3>
                 <p className="text-foreground/70 text-sm leading-relaxed">{item.a}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* CTA Section */}
-      <section className="py-16 md:py-24 bg-background">
+      <motion.section
+        className="py-16 md:py-24 bg-background"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="max-w-7xl mx-auto px-6 md:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Ready to Start Your Project?
@@ -208,7 +228,7 @@ export default function BookingPage() {
             Scroll up to submit your booking request or call us directly at +1 (234) 567-8900.
           </p>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

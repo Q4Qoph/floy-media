@@ -46,3 +46,7 @@ Thumbs.db
 
 # Optional: local tooling
 .turbo
+
+# Serwist (generated service worker)
+public/sw*
+public/swe-worker*
